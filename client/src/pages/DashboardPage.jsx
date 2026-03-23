@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { getAppointments, getTodayStats, getServices } from '../api/api';
 import { ChevronLeft, ChevronRight, Calendar as CalIcon, List } from 'lucide-react';
 
@@ -14,13 +13,12 @@ const startOfWeek = (date) => {
 };
 
 const DashboardPage = () => {
-  const { token } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const [activeTab, setActiveTab] = useState('calendar');
   const [currentWeekStart, setCurrentWeekStart] = useState(startOfWeek(new Date()));
-  
+
   const [appointments, setAppointments] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -29,7 +27,7 @@ const DashboardPage = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const { data } = await getTodayStats(token);
+        const { data } = await getTodayStats();
         setStats(data);
       } catch (err) {
         console.error('Stats fetch err', err);
@@ -38,7 +36,7 @@ const DashboardPage = () => {
 
     const checkServices = async () => {
       try {
-        const { data } = await getServices(token);
+        const { data } = await getServices();
         setHasServices(data.length > 0);
       } catch (err) {
         console.error('Services fetch err', err);
@@ -58,8 +56,8 @@ const DashboardPage = () => {
         const end = new Date(currentWeekStart);
         end.setDate(end.getDate() + 6);
         end.setHours(23, 59, 59, 999);
-        
-        const { data } = await getAppointments(token, currentWeekStart.toISOString(), end.toISOString());
+
+        const { data } = await getAppointments(currentWeekStart.toISOString(), end.toISOString());
         setAppointments(data);
       } catch (err) {
         console.error('Appointments fetch err', err);
@@ -67,8 +65,8 @@ const DashboardPage = () => {
         setLoading(false);
       }
     };
-    if (token) fetchAppointments();
-  }, [token, currentWeekStart]);
+    fetchAppointments();
+  }, [currentWeekStart]);
 
   const weekDays = useMemo(() => {
     const days = [];
@@ -143,9 +141,9 @@ const DashboardPage = () => {
 
       <div className="flex-1 min-h-0 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
         {activeTab === 'calendar' ? (
-          <CalendarView 
-            appointments={appointments} 
-            weekDays={weekDays} 
+          <CalendarView
+            appointments={appointments}
+            weekDays={weekDays}
             today={today}
             loading={loading}
             onPrev={prevWeek}
@@ -154,7 +152,7 @@ const DashboardPage = () => {
             navigate={navigate}
           />
         ) : (
-          <TodayList appointments={appointments.filter(a => new Date(a.startTime).setHours(0,0,0,0) === today.getTime())} navigate={navigate} />
+          <TodayList appointments={appointments.filter(a => new Date(a.startTime).setHours(0, 0, 0, 0) === today.getTime())} navigate={navigate} />
         )}
       </div>
     </div>
@@ -163,7 +161,7 @@ const DashboardPage = () => {
 
 const CalendarView = ({ appointments, weekDays, today, loading, onPrev, onNext, onToday, navigate }) => {
   const hours = Array.from({ length: 14 }, (_, i) => i + 7);
-  
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'confirmed': return 'bg-teal-100 text-teal-800 border-teal-200';
@@ -205,7 +203,7 @@ const CalendarView = ({ appointments, weekDays, today, loading, onPrev, onNext, 
             const isToday = date.getTime() === today.getTime();
             const dayAppts = appointments.filter(a => {
               const apptDate = new Date(a.startTime);
-              apptDate.setHours(0,0,0,0);
+              apptDate.setHours(0, 0, 0, 0);
               return apptDate.getTime() === date.getTime();
             });
 
@@ -215,7 +213,7 @@ const CalendarView = ({ appointments, weekDays, today, loading, onPrev, onNext, 
                   <span className={`text-xs font-semibold uppercase ${isToday ? 'text-indigo-600' : 'text-gray-500'}`}>{date.toLocaleDateString('en-US', { weekday: 'short' })}</span>
                   <span className={`text-lg leading-none ${isToday ? 'text-indigo-600 font-bold' : 'text-gray-900'}`}>{date.getDate()}</span>
                 </div>
-                
+
                 <div className="relative flex-1">
                   {hours.map(h => (
                     <div key={h} className="h-24 border-b border-gray-100">
@@ -227,13 +225,13 @@ const CalendarView = ({ appointments, weekDays, today, loading, onPrev, onNext, 
                     const start = new Date(appt.startTime);
                     const hoursOffset = start.getHours() + (start.getMinutes() / 60) - 7;
                     if (hoursOffset < 0 || hoursOffset > 14) return null;
-                    
+
                     const topPos = hoursOffset * 6; // rem
                     const durationMins = appt.service?.duration || 30;
                     const heightSize = (durationMins / 60) * 6; // rem
 
                     return (
-                      <div 
+                      <div
                         key={appt._id}
                         onClick={() => navigate(`/dashboard/appointments/${appt._id}`)}
                         className={`absolute left-1 right-1 rounded border overflow-hidden p-1 cursor-pointer transition-shadow hover:shadow-md z-1 ${getStatusColor(appt.status)}`}
@@ -252,7 +250,7 @@ const CalendarView = ({ appointments, weekDays, today, loading, onPrev, onNext, 
           })}
         </div>
       </div>
-      
+
       {loading && (
         <div className="absolute inset-0 bg-white/50 z-30 flex items-center justify-center">
           <div className="animate-pulse font-medium text-gray-500">Loading calendar...</div>
@@ -283,10 +281,10 @@ const TodayList = ({ appointments, navigate }) => {
             completed: 'bg-gray-100 text-gray-800 border-gray-200',
             cancelled: 'bg-red-100 text-red-800 border-red-200'
           };
-          
+
           return (
-            <div 
-              key={appt._id} 
+            <div
+              key={appt._id}
               onClick={() => navigate(`/dashboard/appointments/${appt._id}`)}
               className={`bg-white rounded-lg border p-4 flex items-center justify-between hover:shadow-md cursor-pointer transition-shadow group ${statusColors[appt.status] || 'border-gray-200'}`}
             >

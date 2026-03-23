@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { getAppointmentById, updateAppointmentStatus } from '../api/api';
 import { ArrowLeft, Clock, User, Phone, Mail, FileText, Calendar, CheckCircle, XCircle } from 'lucide-react';
 
 const AppointmentDetailPage = () => {
   const { id } = useParams();
-  const { token } = useAuth();
   const navigate = useNavigate();
-  
+
   const [appointment, setAppointment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
@@ -16,7 +14,7 @@ const AppointmentDetailPage = () => {
 
   const fetchAppointment = async () => {
     try {
-      const { data } = await getAppointmentById(token, id);
+      const { data } = await getAppointmentById(id);
       setAppointment(data);
     } catch (err) {
       console.error(err);
@@ -27,15 +25,15 @@ const AppointmentDetailPage = () => {
   };
 
   useEffect(() => {
-    if (token && id) fetchAppointment();
-  }, [token, id]);
+    if (id) fetchAppointment();
+  }, [id]);
 
   const handleUpdateStatus = async (status) => {
     if (!window.confirm(`Are you sure you want to mark this appointment as ${status}?`)) return;
-    
+
     setActionLoading(true);
     try {
-      await updateAppointmentStatus(token, id, status);
+      await updateAppointmentStatus(id, status);
       await fetchAppointment(); // refresh data
     } catch (err) {
       console.error(err);
@@ -60,7 +58,7 @@ const AppointmentDetailPage = () => {
 
   return (
     <div className="p-4 lg:p-8 max-w-4xl mx-auto">
-      <button 
+      <button
         onClick={() => navigate('/dashboard')}
         className="flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 mb-6 transition-colors"
       >
@@ -84,14 +82,14 @@ const AppointmentDetailPage = () => {
           <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0">
             {appointment.status === 'confirmed' ? (
               <>
-                <button 
+                <button
                   onClick={() => handleUpdateStatus('completed')}
                   disabled={actionLoading}
                   className="inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-70"
                 >
                   <CheckCircle className="w-4 h-4 mr-2" /> Mark as Complete
                 </button>
-                <button 
+                <button
                   onClick={() => handleUpdateStatus('cancelled')}
                   disabled={actionLoading}
                   className="inline-flex justify-center items-center px-4 py-2 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-70"
@@ -119,20 +117,20 @@ const AppointmentDetailPage = () => {
                 <dd className="mt-1 text-base text-gray-900 font-medium">{appointment.clientName}</dd>
               </div>
               <div>
-                <dt className="text-sm font-medium text-gray-500 flex items-center"><Mail className="w-4 h-4 mr-1"/> Email Address</dt>
+                <dt className="text-sm font-medium text-gray-500 flex items-center"><Mail className="w-4 h-4 mr-1" /> Email Address</dt>
                 <dd className="mt-1 text-sm text-indigo-600 hover:text-indigo-800">
                   <a href={`mailto:${appointment.clientEmail}`}>{appointment.clientEmail}</a>
                 </dd>
               </div>
               <div>
-                <dt className="text-sm font-medium text-gray-500 flex items-center"><Phone className="w-4 h-4 mr-1"/> Phone Number</dt>
+                <dt className="text-sm font-medium text-gray-500 flex items-center"><Phone className="w-4 h-4 mr-1" /> Phone Number</dt>
                 <dd className="mt-1 text-sm text-gray-900">
                   <a href={`tel:${appointment.clientPhone}`} className="hover:text-indigo-600">{appointment.clientPhone}</a>
                 </dd>
               </div>
               {appointment.notes && (
                 <div className="bg-gray-50 p-3 rounded border border-gray-200">
-                  <dt className="text-sm font-medium text-gray-500 mb-1 flex items-center"><FileText className="w-4 h-4 mr-1"/> Booking Notes</dt>
+                  <dt className="text-sm font-medium text-gray-500 mb-1 flex items-center"><FileText className="w-4 h-4 mr-1" /> Booking Notes</dt>
                   <dd className="text-sm text-gray-700 italic">"{appointment.notes}"</dd>
                 </div>
               )}
@@ -150,7 +148,7 @@ const AppointmentDetailPage = () => {
                 <Clock className="w-4 h-4 mr-1.5" /> {formattedTime}
               </div>
             </div>
-            
+
             <dl className="grid grid-cols-2 gap-y-4 gap-x-4">
               <div className="col-span-2">
                 <dt className="text-sm font-medium text-gray-500">Service</dt>

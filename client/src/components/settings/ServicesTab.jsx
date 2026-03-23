@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { createService, updateService, toggleServiceActive, deleteService } from '../../api/api';
 import { Edit2, Eye, EyeOff, Trash2, Plus } from 'lucide-react';
 
-const ServicesTab = ({ services, staff, onServicesChange, showToast, token }) => {
+const ServicesTab = ({ services, staff, onServicesChange, showToast }) => {
   const [view, setView] = useState('list');
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({ name: '', duration: 30, price: '', assignedStaff: [] });
@@ -27,7 +27,7 @@ const ServicesTab = ({ services, staff, onServicesChange, showToast, token }) =>
 
   const handleToggle = async (id) => {
     try {
-      const { data } = await toggleServiceActive(token, id);
+      const { data } = await toggleServiceActive(id);
       onServicesChange(services.map(s => s._id === id ? data : s));
       showToast('Service status updated', 'success');
     } catch (err) {
@@ -51,11 +51,11 @@ const ServicesTab = ({ services, staff, onServicesChange, showToast, token }) =>
     setLoading(true);
     try {
       if (editingId) {
-        const { data } = await updateService(token, editingId, formData);
+        const { data } = await updateService(editingId, formData);
         onServicesChange(services.map(s => s._id === editingId ? data : s));
         showToast('Service updated', 'success');
       } else {
-        const { data } = await createService(token, formData);
+        const { data } = await createService(formData);
         onServicesChange([...services, data]);
         showToast('Service created', 'success');
       }
@@ -83,12 +83,12 @@ const ServicesTab = ({ services, staff, onServicesChange, showToast, token }) =>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Service Name</label>
-            <input name="name" type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500" />
+            <input name="name" type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">Duration</label>
-              <select name="duration" value={formData.duration} onChange={e => setFormData({...formData, duration: Number(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500">
+              <select name="duration" value={formData.duration} onChange={e => setFormData({ ...formData, duration: Number(e.target.value) })} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500">
                 {[15, 30, 45, 60, 75, 90, 105, 120, 150, 180].map(mins => (
                   <option key={mins} value={mins}>{mins} minutes</option>
                 ))}
@@ -96,7 +96,7 @@ const ServicesTab = ({ services, staff, onServicesChange, showToast, token }) =>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Price (ZAR)</label>
-              <input name="price" type="number" min="0" value={formData.price} onChange={e => setFormData({...formData, price: Number(e.target.value)})} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500" />
+              <input name="price" type="number" min="0" value={formData.price} onChange={e => setFormData({ ...formData, price: Number(e.target.value) })} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500" />
             </div>
           </div>
           <div>

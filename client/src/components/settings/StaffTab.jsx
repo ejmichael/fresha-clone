@@ -4,10 +4,10 @@ import { Edit2, Trash2, Plus } from 'lucide-react';
 
 const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-const StaffTab = ({ staff, profile, onStaffChange, showToast, token }) => {
+const StaffTab = ({ staff, profile, onStaffChange, showToast }) => {
   const [view, setView] = useState('list');
   const [editingId, setEditingId] = useState(null);
-  
+
   const getDefaultHours = () => {
     if (profile?.operatingHours?.length === 7) {
       return profile.operatingHours.map(d => ({ day: d.day, start: d.open || '09:00', end: d.close || '17:00', isOff: d.isClosed }));
@@ -37,7 +37,7 @@ const StaffTab = ({ staff, profile, onStaffChange, showToast, token }) => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure? This cannot be undone.')) return;
     try {
-      await deleteStaff(token, id);
+      await deleteStaff(id);
       onStaffChange(staff.filter(s => s._id !== id));
       showToast('Staff member deleted', 'success');
     } catch (err) {
@@ -56,11 +56,11 @@ const StaffTab = ({ staff, profile, onStaffChange, showToast, token }) => {
     setLoading(true);
     try {
       if (editingId) {
-        const { data } = await updateStaff(token, editingId, formData);
+        const { data } = await updateStaff(editingId, formData);
         onStaffChange(staff.map(s => s._id === editingId ? data : s));
         showToast('Staff member updated', 'success');
       } else {
-        const { data } = await createStaff(token, formData);
+        const { data } = await createStaff(formData);
         onStaffChange([...staff, data]);
         showToast('Staff member added', 'success');
       }
@@ -80,11 +80,11 @@ const StaffTab = ({ staff, profile, onStaffChange, showToast, token }) => {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">Name</label>
-              <input name="name" type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500" />
+              <input name="name" type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Bio <span className="text-gray-400 font-normal">(Optional)</span></label>
-              <textarea name="bio" value={formData.bio} onChange={e => setFormData({...formData, bio: e.target.value})} rows="2" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+              <textarea name="bio" value={formData.bio} onChange={e => setFormData({ ...formData, bio: e.target.value })} rows="2" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
             </div>
           </div>
 
@@ -146,7 +146,7 @@ const StaffTab = ({ staff, profile, onStaffChange, showToast, token }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {staff.map(s => {
             const workingDays = s.workingHours?.filter(hq => !hq.isOff).map(hq => dayNames[hq.day].substring(0, 3)).join(', ') || 'No active days';
-            
+
             return (
               <div key={s._id} className="border border-gray-200 rounded-lg p-5 bg-white shadow-sm flex flex-col justify-between">
                 <div>

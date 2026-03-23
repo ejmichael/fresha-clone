@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { updateProfile, updatePassword } from '../../api/api';
 
-const ProfileTab = ({ profile, onProfileUpdate, showToast, token }) => {
+const ProfileTab = ({ profile, onProfileUpdate, showToast }) => {
   const [formData, setFormData] = useState({
     name: profile?.name || '',
     slug: profile?.slug || '',
@@ -23,7 +23,7 @@ const ProfileTab = ({ profile, onProfileUpdate, showToast, token }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await updateProfile(token, formData);
+      const { data } = await updateProfile(formData);
       onProfileUpdate(data);
       showToast('Profile updated successfully', 'success');
     } catch (err) {
@@ -41,7 +41,7 @@ const ProfileTab = ({ profile, onProfileUpdate, showToast, token }) => {
     }
     setPwLoading(true);
     try {
-      await updatePassword(token, pwData.currentPassword, pwData.newPassword);
+      await updatePassword(pwData.currentPassword, pwData.newPassword);
       showToast('Password updated', 'success');
       setPwData({ currentPassword: '', newPassword: '', confirmPassword: '' });
     } catch (err) {

@@ -3,7 +3,7 @@ import { updateHours } from '../../api/api';
 
 const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-const HoursTab = ({ profile, onHoursUpdate, showToast, token }) => {
+const HoursTab = ({ profile, onHoursUpdate, showToast }) => {
   const [hours, setHours] = useState(() => {
     if (profile?.operatingHours?.length === 7) return profile.operatingHours;
     return Array.from({ length: 7 }, (_, i) => ({ day: i, open: '09:00', close: '17:00', isClosed: i === 0 }));
@@ -20,7 +20,7 @@ const HoursTab = ({ profile, onHoursUpdate, showToast, token }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await updateHours(token, hours);
+      const { data } = await updateHours(hours);
       onHoursUpdate({ ...profile, operatingHours: data });
       showToast('Operating hours saved', 'success');
     } catch (err) {
@@ -52,9 +52,9 @@ const HoursTab = ({ profile, onHoursUpdate, showToast, token }) => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <label className="flex items-center space-x-2 cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        checked={dayObj.isClosed} 
+                      <input
+                        type="checkbox"
+                        checked={dayObj.isClosed}
                         onChange={(e) => handleUpdate(i, 'isClosed', e.target.checked)}
                         className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4"
                       />
@@ -62,18 +62,18 @@ const HoursTab = ({ profile, onHoursUpdate, showToast, token }) => {
                     </label>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <input 
-                      type="time" 
-                      value={dayObj.open} 
+                    <input
+                      type="time"
+                      value={dayObj.open}
                       onChange={(e) => handleUpdate(i, 'open', e.target.value)}
                       disabled={dayObj.isClosed}
                       className="border border-gray-300 rounded-md py-1 px-2 text-sm focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50"
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <input 
-                      type="time" 
-                      value={dayObj.close} 
+                    <input
+                      type="time"
+                      value={dayObj.close}
                       onChange={(e) => handleUpdate(i, 'close', e.target.value)}
                       disabled={dayObj.isClosed}
                       className="border border-gray-300 rounded-md py-1 px-2 text-sm focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50"

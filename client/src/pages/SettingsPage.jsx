@@ -70,10 +70,10 @@ const SettingsPage = () => {
           <div className="flex items-center justify-center h-64 text-gray-500 animate-pulse">Loading settings...</div>
         ) : (
           <>
-            {activeTab === 'profile' && <ProfileTab profile={profile} onProfileUpdate={setProfile} showToast={showToast} token={token} />}
-            {activeTab === 'hours' && <HoursTab profile={profile} onHoursUpdate={setProfile} showToast={showToast} token={token} />}
-            {activeTab === 'services' && <ServicesTab services={services} staff={staff} onServicesChange={setServices} showToast={showToast} token={token} />}
-            {activeTab === 'staff' && <StaffTab staff={staff} profile={profile} onStaffChange={setStaff} showToast={showToast} token={token} />}
+            {activeTab === 'profile' && <ProfileTab profile={profile} onProfileUpdate={setProfile} showToast={showToast} />}
+            {activeTab === 'hours' && <HoursTab profile={profile} onHoursUpdate={setProfile} showToast={showToast} />}
+            {activeTab === 'services' && <ServicesTab services={services} staff={staff} onServicesChange={setServices} showToast={showToast} />}
+            {activeTab === 'staff' && <StaffTab staff={staff} profile={profile} onStaffChange={setStaff} showToast={showToast} />}
           </>
         )}
       </div>
