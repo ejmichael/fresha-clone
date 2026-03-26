@@ -43,11 +43,9 @@ const DashboardPage = () => {
       }
     };
 
-    if (token) {
-      fetchStats();
-      checkServices();
-    }
-  }, [token, location.pathname]);
+    fetchStats();
+    checkServices();
+  }, [location.pathname]);
 
   useEffect(() => {
     const fetchAppointments = async () => {
