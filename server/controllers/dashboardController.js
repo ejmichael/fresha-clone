@@ -54,9 +54,16 @@ export const updateAppointmentStatus = async (req, res) => {
       return res.status(400).json({ message: 'Invalid status' });
     }
 
+    const updateData = { status };
+    if (status === 'completed') {
+      updateData.completedAt = new Date();
+    } else {
+      updateData.$unset = { completedAt: 1 };
+    }
+
     const appointment = await Appointment.findOneAndUpdate(
       { _id: id, business: businessId },
-      { status },
+      updateData,
       { returnDocument: 'after' }
     )
       .populate('staff', 'name')
@@ -149,34 +156,50 @@ export const getTodayStats = async (req, res) => {
 
     console.log(`[Stats Debug] Business: ${business.name} (${tz})`);
     console.log(`[Stats Debug] Local Now (Server): ${now.toISOString()}`);
-    console.log(`[Stats Debug] Range: ${businessTodayStart.toISOString()} to ${businessTodayEnd.toISOString()}`);
+    // Month start in local business time
+    const monthStartString = `${year}-${(month + 1).toString().padStart(2, '0')}-01T00:00:00`;
+    const businessMonthStart = getZonedDate(monthStartString, tz);
 
-    const appointments = await Appointment.find({
+    console.log(`[Stats Debug] Month Range: ${businessMonthStart.toISOString()} to ${businessTodayEnd.toISOString()}`);
+
+    // Query for "Today" stats (scheduled counts)
+    const todayAppointments = await Appointment.find({
       business: businessId,
       startTime: { $gte: businessTodayStart, $lte: businessTodayEnd }
     }).populate('service', 'price');
 
-    console.log(`[Stats Debug] Appointments found: ${appointments.length}`);
+    // Query for "Monthly" revenue (completed in month)
+    const monthlyAppointments = await Appointment.find({
+      business: businessId,
+      status: 'completed',
+      completedAt: { $gte: businessMonthStart, $lte: businessTodayEnd }
+    }).populate('service', 'price');
 
-    let totalToday = 0;
+    console.log(`[Stats Debug] Today Appointments found: ${todayAppointments.length}`);
+    console.log(`[Stats Debug] Monthly Completed Appointments: ${monthlyAppointments.length}`);
+
+    let totalToday = todayAppointments.length;
     let confirmedToday = 0;
     let completedToday = 0;
     let cancelledToday = 0;
     let revenueToday = 0;
+    let revenueMonth = 0;
 
-    appointments.forEach(appt => {
-      totalToday++;
+    todayAppointments.forEach(appt => {
       if (appt.status === 'confirmed') confirmedToday++;
-      if (appt.status === 'completed') {
-        completedToday++;
-        // Use price from service if available, otherwise check if we can fallback (though we should have it)
-        if (appt.service && typeof appt.service.price === 'number') {
+      if (appt.status === 'completed') completedToday++;
+      if (appt.status === 'cancelled') cancelledToday++;
+    });
+
+    monthlyAppointments.forEach(appt => {
+      if (appt.service && typeof appt.service.price === 'number') {
+        revenueMonth += appt.service.price;
+        
+        // If it was completed TODAY, also add to today's revenue (optional, but keep for debug)
+        if (appt.completedAt >= businessTodayStart && appt.completedAt <= businessTodayEnd) {
           revenueToday += appt.service.price;
-        } else {
-          console.warn(`[Stats Warning] Missing service price for completed appointment ${appt._id}`);
         }
       }
-      if (appt.status === 'cancelled') cancelledToday++;
     });
 
     res.json({
@@ -185,11 +208,11 @@ export const getTodayStats = async (req, res) => {
       completedToday,
       cancelledToday,
       revenueToday,
+      revenueMonth,
       debug: {
         tz,
-        start: businessTodayStart.toISOString(),
-        end: businessTodayEnd.toISOString(),
-        count: appointments.length
+        rangeToday: [businessTodayStart.toISOString(), businessTodayEnd.toISOString()],
+        rangeMonth: [businessMonthStart.toISOString(), businessTodayEnd.toISOString()]
       }
     });
   } catch (error) {

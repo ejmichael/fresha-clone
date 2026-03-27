@@ -1,0 +1,33 @@
+services:
+  # Backend Web Service
+  - type: web
+    name: fresha-clone-backend
+    env: node
+    rootDir: server
+    plan: free # Can be changed as needed
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - fromGroup: fresha-clone-secrets # Expecting a Secret Group for MONGO_URI, JWT_SECRET, etc.
+
+  # Frontend Static Site
+  - type: static
+    name: fresha-clone-frontend
+    env: static
+    rootDir: client
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: fresha-clone-backend
+          property: host
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

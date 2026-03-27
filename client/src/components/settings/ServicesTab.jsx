@@ -38,7 +38,7 @@ const ServicesTab = ({ services, staff, onServicesChange, showToast }) => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure? This cannot be undone.')) return;
     try {
-      await deleteService(token, id);
+      await deleteService(id);
       onServicesChange(services.filter(s => s._id !== id));
       showToast('Service deleted', 'success');
     } catch (err) {

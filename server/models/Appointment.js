@@ -13,6 +13,7 @@ const appointmentSchema = new mongoose.Schema({
   calendarEventId: String,
   reminderSent: { type: Boolean, default: false },
   reminderJobId: { type: String, default: null },
+  completedAt: { type: Date, default: null },
   createdAt: { type: Date, default: Date.now }
 });
 

@@ -8,6 +8,25 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('saas_token') || null);
   const [loading, setLoading] = useState(true);
 
+  const logout = () => {
+    setToken(null);
+    setBusiness(null);
+    localStorage.removeItem('saas_token');
+  };
+
+  const login = async (email, password) => {
+    const { data } = await loginBusiness(email, password);
+    setToken(data.token);
+    setBusiness(data.business);
+    localStorage.setItem('saas_token', data.token);
+  };
+
+  const setAuthData = (newToken, businessData) => {
+    setToken(newToken);
+    setBusiness(businessData);
+    localStorage.setItem('saas_token', newToken);
+  };
+
   useEffect(() => {
     const hydrateSession = async () => {
       if (token) {
@@ -23,25 +42,6 @@ export const AuthProvider = ({ children }) => {
     };
     hydrateSession();
   }, [token]);
-
-  const login = async (email, password) => {
-    const { data } = await loginBusiness(email, password);
-    setToken(data.token);
-    setBusiness(data.business);
-    localStorage.setItem('saas_token', data.token);
-  };
-
-  const logout = () => {
-    setToken(null);
-    setBusiness(null);
-    localStorage.removeItem('saas_token');
-  };
-
-  const setAuthData = (newToken, businessData) => {
-    setToken(newToken);
-    setBusiness(businessData);
-    localStorage.setItem('saas_token', newToken);
-  };
 
   return (
     <AuthContext.Provider value={{ business, token, loading, isAuthenticated: !!token, login, logout, setAuthData }}>

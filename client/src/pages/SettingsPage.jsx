@@ -23,9 +23,9 @@ const SettingsPage = () => {
       setLoading(true);
       try {
         const [profileRes, servicesRes, staffRes] = await Promise.all([
-          getProfile(token),
-          getServices(token),
-          getStaff(token)
+          getProfile(),
+          getServices(),
+          getStaff()
         ]);
         setProfile(profileRes.data);
         setServices(servicesRes.data);

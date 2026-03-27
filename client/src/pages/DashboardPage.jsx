@@ -113,7 +113,7 @@ const DashboardPage = () => {
           { label: 'Total Today', value: stats?.totalToday || 0, color: 'bg-blue-50 text-blue-700' },
           { label: 'Confirmed', value: stats?.confirmedToday || 0, color: 'bg-teal-50 text-teal-700' },
           { label: 'Completed', value: stats?.completedToday || 0, color: 'bg-gray-50 text-gray-700' },
-          { label: 'Revenue Today', value: `R ${stats?.revenueToday || 0}`, color: 'bg-green-50 text-green-700' }
+          { label: 'Revenue This Month', value: `R ${stats?.revenueMonth || 0}`, color: 'bg-green-50 text-green-700' }
         ].map((stat, i) => (
           <div key={i} className={`rounded-xl p-4 flex flex-col justify-center shadow-sm border border-gray-100 ${stat.color}`}>
             <span className="text-sm font-medium opacity-80">{stat.label}</span>
