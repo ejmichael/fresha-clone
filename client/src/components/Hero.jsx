@@ -30,9 +30,9 @@ const Hero = () => {
               >
                 Get Started for Free
               </Link>
-              <button className="px-8 py-4 border border-gray-200 text-gray-700 rounded-full font-bold hover:bg-gray-50 transition-all flex items-center justify-center gap-2 uppercase tracking-wide">
+              {/* <button className="px-8 py-4 border border-gray-200 text-gray-700 rounded-full font-bold hover:bg-gray-50 transition-all flex items-center justify-center gap-2 uppercase tracking-wide">
                 Watch Demo
-              </button>
+              </button> */}
             </div>
 
             <div className="mt-8 flex items-center gap-6 text-sm text-gray-500 font-medium">
