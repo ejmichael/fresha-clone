@@ -2,8 +2,8 @@ import IORedis from 'ioredis';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const isPlaceholder = !process.env.REDIS_URL || 
-  process.env.REDIS_URL.includes('YOUR_PASSWORD') || 
+const isPlaceholder = !process.env.REDIS_URL ||
+  process.env.REDIS_URL.includes('YOUR_PASSWORD') ||
   process.env.REDIS_URL.includes('YOUR_ENDPOINT');
 
 if (isPlaceholder) {
@@ -21,6 +21,11 @@ if (connection) {
   connection.on('error', (err) => {
     // Only log if it's not a DNS failure on a clear placeholder (though we handled that above)
     console.error('Redis error:', err.message);
+    if (err.message.includes('max requests limit exceeded')) {
+      console.log('⚠️ [Redis] Upstash Free Limit Exceeded. Automatically disconnecting to prevent endless loops.');
+      // Disconnect immediately to stop BullMQ from spamming and crashing the terminal
+      connection.disconnect();
+    }
   });
 }
 

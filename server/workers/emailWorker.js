@@ -33,6 +33,14 @@ if (connection) {
     console.error(`Email job ${job.id} (${job.data.type}) failed:`, err.message);
   });
 
+  worker.on('error', (err) => {
+    console.error(`[Worker] Error:`, err.message);
+    if (err.message.includes('max requests limit exceeded')) {
+      console.log('⚠️ [Worker] Upstash Free Limit Exceeded. Shutting down worker to prevent infinite loops.');
+      worker.close();
+    }
+  });
+
   console.log('✅ [Worker] Email worker started and connected to Redis.');
 } else {
   console.log('⚠️ [Worker] Email worker skipped (No Redis connection).');

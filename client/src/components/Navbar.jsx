@@ -14,14 +14,13 @@ const Navbar = () => {
               <span className="text-3xl tracking-tighter text-lazie-primary font-logo">lazie</span>
             </Link>
           </div>
-          
+
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/features" className="text-sm font-medium text-gray-600 hover:text-lazie-dark transition-colors">Features</Link>
             <Link to="/pricing" className="text-sm font-medium text-gray-600 hover:text-lazie-dark transition-colors">Pricing</Link>
-            <a href="/#testimonials" className="text-sm font-medium text-gray-600 hover:text-lazie-dark transition-colors">Testimonials</a>
             <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-lazie-dark transition-colors">Log in</Link>
-            <Link 
-              to="/register" 
+            <Link
+              to="/register"
               className="px-6 py-2.5 bg-lazie-primary text-gray-950 rounded-full text-sm font-bold hover:brightness-90 transition-all shadow-lg shadow-lazie-primary/20 flex items-center gap-2 uppercase tracking-wide"
             >
               Sign up <ArrowRight size={16} />

@@ -10,6 +10,8 @@ import FaqPage from './pages/FaqPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 import LegalInfoPage from './pages/LegalInfoPage';
+import ContactPage from './pages/ContactPage';
+import AboutPage from './pages/AboutPage';
 
 import DashboardLayout from './components/DashboardLayout';
 import DashboardPage from './pages/DashboardPage';
@@ -32,6 +34,8 @@ function App() {
             <Route path="/cancel/:id" element={<CancelPage />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/faq" element={<FaqPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-of-service" element={<TermsOfServicePage />} />
             <Route path="/legal" element={<LegalInfoPage />} />
