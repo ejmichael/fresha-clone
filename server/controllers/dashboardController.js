@@ -3,6 +3,7 @@ import Business from '../models/Business.js';
 import emailQueue from '../queues/emailQueue.js';
 import { Queue } from 'bullmq';
 import connection from '../config/redis.js';
+import { autoCreateFromAppointment } from './invoiceController.js';
 
 export const getAppointments = async (req, res) => {
   try {
@@ -86,6 +87,15 @@ export const updateAppointmentStatus = async (req, res) => {
         type: 'cancellation',
         appointmentId: appointment._id.toString(),
       });
+    }
+
+    // Auto-create draft invoice when appointment is completed
+    if (status === 'completed') {
+      try {
+        await autoCreateFromAppointment(appointment._id);
+      } catch (err) {
+        console.warn('[Dashboard] Auto invoice creation failed:', err.message);
+      }
     }
 
     res.json(appointment);

@@ -13,6 +13,12 @@ services:
       - key: PORT
         value: 10000
       - fromGroup: fresha-clone-secrets # Expecting a Secret Group for MONGO_URI, JWT_SECRET, etc.
+      - key: CLIENT_URL
+        fromService:
+          type: static
+          name: fresha-clone-frontend
+          property: host
+
 
   # Frontend Static Site
   - type: static

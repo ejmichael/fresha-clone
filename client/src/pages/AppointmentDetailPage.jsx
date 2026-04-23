@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getAppointmentById, updateAppointmentStatus } from '../api/api';
-import { ArrowLeft, Clock, User, Phone, Mail, FileText, Calendar, CheckCircle, XCircle } from 'lucide-react';
+import { getAppointmentById, updateAppointmentStatus, getInvoices } from '../api/api';
+import { ArrowLeft, Clock, User, Phone, Mail, FileText, Calendar, CheckCircle, XCircle, ExternalLink } from 'lucide-react';
 
 const AppointmentDetailPage = () => {
   const { id } = useParams();
@@ -11,6 +11,7 @@ const AppointmentDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState('');
+  const [relatedInvoice, setRelatedInvoice] = useState(null);
 
   const fetchAppointment = async () => {
     try {
@@ -24,8 +25,22 @@ const AppointmentDetailPage = () => {
     }
   };
 
+  const fetchInvoice = async () => {
+    try {
+      const { data } = await getInvoices({ appointmentId: id });
+      if (data.invoices && data.invoices.length > 0) {
+        setRelatedInvoice(data.invoices[0]);
+      }
+    } catch (err) {
+      console.error('Failed to fetch related invoice');
+    }
+  };
+
   useEffect(() => {
-    if (id) fetchAppointment();
+    if (id) {
+      fetchAppointment();
+      fetchInvoice();
+    }
   }, [id]);
 
   const handleUpdateStatus = async (status) => {
@@ -102,6 +117,15 @@ const AppointmentDetailPage = () => {
                 No actions available
               </div>
             )}
+
+            {relatedInvoice && (
+              <button
+                onClick={() => navigate('/dashboard/invoices')}
+                className="inline-flex justify-center items-center px-4 py-2 border border-lazie-primary/30 text-sm font-bold rounded-full text-lazie-dark bg-lazie-primary/10 hover:bg-lazie-primary/20 transition-all uppercase"
+              >
+                <FileText className="w-4 h-4 mr-2" /> View Invoice {relatedInvoice.invoiceNumber}
+              </button>
+            )}
           </div>
         </div>
 
@@ -109,7 +133,7 @@ const AppointmentDetailPage = () => {
           {/* Client Details */}
           <div>
             <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-              <User className="w-5 h-5 mr-2 text-indigo-500" /> Client Information
+              <User className="w-5 h-5 mr-2 text-lazie-primary" /> Client Information
             </h2>
             <dl className="space-y-4">
               <div>
@@ -118,14 +142,14 @@ const AppointmentDetailPage = () => {
               </div>
               <div>
                 <dt className="text-sm font-medium text-gray-500 flex items-center"><Mail className="w-4 h-4 mr-1" /> Email Address</dt>
-                <dd className="mt-1 text-sm text-indigo-600 hover:text-indigo-800">
+                <dd className="mt-1 text-sm text-lazie-primary hover:text-lazie-dark">
                   <a href={`mailto:${appointment.clientEmail}`}>{appointment.clientEmail}</a>
                 </dd>
               </div>
               <div>
                 <dt className="text-sm font-medium text-gray-500 flex items-center"><Phone className="w-4 h-4 mr-1" /> Phone Number</dt>
                 <dd className="mt-1 text-sm text-gray-900">
-                  <a href={`tel:${appointment.clientPhone}`} className="hover:text-indigo-600">{appointment.clientPhone}</a>
+                  <a href={`tel:${appointment.clientPhone}`} className="hover:text-lazie-primary">{appointment.clientPhone}</a>
                 </dd>
               </div>
               {appointment.notes && (
@@ -140,11 +164,11 @@ const AppointmentDetailPage = () => {
           {/* Appointment Details */}
           <div>
             <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-              <Calendar className="w-5 h-5 mr-2 text-indigo-500" /> Booking Details
+              <Calendar className="w-5 h-5 mr-2 text-lazie-primary" /> Booking Details
             </h2>
-            <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-4 mb-5">
-              <div className="text-indigo-800 font-semibold text-lg">{formattedDate}</div>
-              <div className="text-indigo-600 flex items-center mt-1">
+            <div className="bg-lazie-primary/10 border border-lazie-primary/20 rounded-lg p-4 mb-5">
+              <div className="text-lazie-dark font-semibold text-lg">{formattedDate}</div>
+              <div className="text-lazie-primary flex items-center mt-1">
                 <Clock className="w-4 h-4 mr-1.5" /> {formattedTime}
               </div>
             </div>
@@ -172,6 +196,35 @@ const AppointmentDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {relatedInvoice && (
+        <div className="bg-teal-50 border-t border-teal-100 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-bold text-teal-900 uppercase tracking-wider flex items-center">
+              <FileText className="w-4 h-4 mr-2" /> Invoice Summary
+              <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold capitalize ${
+                appointment.status === 'confirmed' ? 'bg-lazie-primary/20 text-lazie-dark' : 
+                appointment.status === 'completed' ? 'bg-gray-100 text-gray-800' : 
+                'bg-red-100 text-red-800'
+              }`}>
+                {appointment.status}
+              </span>
+            </h2>
+          </div>
+          <div className="flex justify-between items-end">
+            <div className="text-sm text-teal-700">
+              <p>Invoice #: <span className="font-bold">{relatedInvoice.invoiceNumber}</span></p>
+              <p>Amount: <span className="font-bold">{relatedInvoice.currency} {relatedInvoice.total.toFixed(2)}</span></p>
+            </div>
+            <button
+              onClick={() => navigate('/dashboard/invoices')}
+              className="text-xs font-bold text-teal-600 hover:text-teal-800 flex items-center"
+            >
+              Manage Invoice <ExternalLink className="w-3 h-3 ml-1" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

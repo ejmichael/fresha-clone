@@ -83,12 +83,12 @@ const ServicesTab = ({ services, staff, onServicesChange, showToast }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Service Name</label>
-            <input name="name" type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500" />
+            <input name="name" type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-lazie-primary focus:border-lazie-primary" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">Duration</label>
-              <select name="duration" value={formData.duration} onChange={e => setFormData({ ...formData, duration: Number(e.target.value) })} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500">
+              <select name="duration" value={formData.duration} onChange={e => setFormData({ ...formData, duration: Number(e.target.value) })} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-lazie-primary focus:border-lazie-primary">
                 {[15, 30, 45, 60, 75, 90, 105, 120, 150, 180].map(mins => (
                   <option key={mins} value={mins}>{mins} minutes</option>
                 ))}
@@ -96,7 +96,7 @@ const ServicesTab = ({ services, staff, onServicesChange, showToast }) => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Price (ZAR)</label>
-              <input name="price" type="number" min="0" value={formData.price} onChange={e => setFormData({ ...formData, price: Number(e.target.value) })} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500" />
+              <input name="price" type="number" min="0" value={formData.price} onChange={e => setFormData({ ...formData, price: Number(e.target.value) })} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm focus:ring-lazie-primary focus:border-lazie-primary" />
             </div>
           </div>
           <div>
@@ -104,7 +104,7 @@ const ServicesTab = ({ services, staff, onServicesChange, showToast }) => {
             <div className="space-y-2 border border-gray-200 rounded-md p-3 max-h-48 overflow-y-auto">
               {staff.length === 0 ? <p className="text-sm text-gray-500">No staff available.</p> : staff.map(s => (
                 <label key={s._id} className="flex items-center space-x-2">
-                  <input type="checkbox" checked={formData.assignedStaff.includes(s._id)} onChange={() => handleStaffToggle(s._id)} className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                  <input type="checkbox" checked={formData.assignedStaff.includes(s._id)} onChange={() => handleStaffToggle(s._id)} className="rounded border-gray-300 text-lazie-primary focus:ring-lazie-primary" />
                   <span className="text-sm text-gray-700">{s.name}</span>
                 </label>
               ))}
@@ -112,7 +112,7 @@ const ServicesTab = ({ services, staff, onServicesChange, showToast }) => {
           </div>
           <div className="flex justify-end space-x-3 pt-4">
             <button type="button" onClick={() => setView('list')} className="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Cancel</button>
-            <button type="submit" disabled={loading} className={`py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 ${loading ? 'opacity-70' : ''}`}>{loading ? 'Saving...' : 'Save Service'}</button>
+            <button type="submit" disabled={loading} className={`py-2.5 px-6 border border-transparent rounded-full shadow-sm text-sm font-bold text-gray-950 bg-lazie-primary hover:brightness-90 ${loading ? 'opacity-70' : ''} transition-all uppercase tracking-wide`}>{loading ? 'Saving...' : 'Save Service'}</button>
           </div>
         </form>
       </div>
@@ -123,7 +123,7 @@ const ServicesTab = ({ services, staff, onServicesChange, showToast }) => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-lg font-bold text-gray-900">Services</h2>
-        <button onClick={handleAdd} className="flex items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+        <button onClick={handleAdd} className="flex items-center py-2.5 px-6 border border-transparent rounded-full shadow-sm text-sm font-bold text-gray-950 bg-lazie-primary hover:brightness-90 transition-all uppercase tracking-wide">
           <Plus className="w-4 h-4 mr-2" /> Add Service
         </button>
       </div>
@@ -131,7 +131,7 @@ const ServicesTab = ({ services, staff, onServicesChange, showToast }) => {
       {services.length === 0 ? (
         <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
           <p className="text-sm text-gray-500 mb-4">No services yet.</p>
-          <button onClick={handleAdd} className="inline-flex items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-700 bg-indigo-100 hover:bg-indigo-200">
+          <button onClick={handleAdd} className="inline-flex items-center py-2.5 px-6 border border-transparent rounded-full shadow-sm text-sm font-bold text-lazie-dark bg-lazie-primary/10 hover:bg-lazie-primary/20 transition-all uppercase tracking-wide">
             Add your first service
           </button>
         </div>

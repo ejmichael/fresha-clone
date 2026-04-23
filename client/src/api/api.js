@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const rawBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:5011/api';
+let rawBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:5011/api';
+if (rawBaseURL && !rawBaseURL.startsWith('http') && !rawBaseURL.startsWith('/')) {
+  rawBaseURL = `https://${rawBaseURL}`;
+}
 const apiBaseURL = rawBaseURL.endsWith('/api') ? rawBaseURL : `${rawBaseURL.replace(/\/$/, '')}/api`;
 
 const api = axios.create({
@@ -63,5 +66,21 @@ export const getStaff = () => api.get('/settings/staff');
 export const createStaff = (data) => api.post('/settings/staff', data);
 export const updateStaff = (id, data) => api.put(`/settings/staff/${id}`, data);
 export const deleteStaff = (id) => api.delete(`/settings/staff/${id}`);
+
+
+// Logo upload
+export const uploadLogo = (formData) => api.post('/invoices/upload/logo', formData, {
+  headers: { 'Content-Type': 'multipart/form-data' }
+});
+
+// Invoices
+export const getInvoices = (params) => api.get('/invoices', { params });
+export const getInvoiceById = (id) => api.get(`/invoices/${id}`);
+export const createInvoice = (data) => api.post('/invoices', data);
+export const updateInvoice = (id, data) => api.put(`/invoices/${id}`, data);
+export const deleteInvoice = (id) => api.delete(`/invoices/${id}`);
+export const sendInvoice = (id) => api.post(`/invoices/${id}/send`);
+export const downloadInvoicePDF = (id) => api.get(`/invoices/${id}/pdf`, { responseType: 'blob' });
+export const updateInvoiceStatus = (id, status) => api.patch(`/invoices/${id}/status`, { status });
 
 export default api;

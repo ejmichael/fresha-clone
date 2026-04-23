@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Calendar, ListTodo, Users, Settings, LogOut, Menu, X } from 'lucide-react';
+import { Calendar, ListTodo, Users, Settings, LogOut, Menu, X, FileText } from 'lucide-react';
 
 const DashboardLayout = () => {
   const { business, logout } = useAuth();
@@ -37,11 +37,16 @@ const DashboardLayout = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-          <NavLink to="/dashboard" end className={({ isActive }) => `flex items-center px-3 py-2 text-sm font-medium rounded-md ${isActive ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-50'}`}>
+          <NavLink to="/dashboard" end className={({ isActive }) => `flex items-center px-3 py-2 text-sm font-medium rounded-md ${isActive ? 'bg-lazie-primary/10 text-lazie-dark' : 'text-gray-700 hover:bg-gray-50'}`}>
             <Calendar className="mr-3 flex-shrink-0 h-5 w-5" />
             Calendar & Today
           </NavLink>
           
+          <NavLink to="/dashboard/invoices" className={({ isActive }) => `flex items-center px-3 py-2 text-sm font-medium rounded-md ${isActive ? 'bg-lazie-primary/10 text-lazie-dark' : 'text-gray-700 hover:bg-gray-50'}`}>
+            <FileText className="mr-3 flex-shrink-0 h-5 w-5" />
+            Invoices
+          </NavLink>
+
           <div className="pt-4 pb-2">
             <p className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Coming Soon</p>
           </div>
@@ -49,7 +54,7 @@ const DashboardLayout = () => {
             <Users className="mr-3 flex-shrink-0 h-5 w-5" />
             Clients
           </button>
-          <NavLink to="/dashboard/settings" className={({ isActive }) => `w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${isActive ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-50'}`}>
+          <NavLink to="/dashboard/settings" className={({ isActive }) => `w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${isActive ? 'bg-lazie-primary/10 text-lazie-dark' : 'text-gray-700 hover:bg-gray-50'}`}>
             <Settings className="mr-3 flex-shrink-0 h-5 w-5" />
             Settings
           </NavLink>

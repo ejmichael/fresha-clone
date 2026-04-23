@@ -9,72 +9,72 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
           <div className="lg:col-span-4">
             <Link to="/" className="flex items-center space-x-2 mb-8">
-              <span className="text-3xl font-extrabold tracking-tight text-white uppercase">Fresha</span>
-              <span className="text-3xl font-light text-gray-500">Clone</span>
+              <span className="text-3xl tracking-tighter text-white font-logo">lazie</span>
             </Link>
             <p className="text-gray-400 text-lg mb-8 leading-relaxed max-w-sm">
-              The leading appointment scheduling software for beauty and wellness professionals.
+              The leading appointment scheduling software for all service-based businesses.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center hover:bg-prince transition-colors group">
-                <Facebook size={20} className="text-gray-400 group-hover:text-white" />
+              <a href="#" className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center hover:bg-lazie-primary transition-colors group">
+                <Facebook size={20} className="text-gray-400 group-hover:text-gray-950" />
               </a>
-              <a href="#" className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center hover:bg-prince transition-colors group">
-                <Instagram size={20} className="text-gray-400 group-hover:text-white" />
+              <a href="#" className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center hover:bg-lazie-primary transition-colors group">
+                <Instagram size={20} className="text-gray-400 group-hover:text-gray-950" />
               </a>
-              <a href="#" className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center hover:bg-prince transition-colors group">
-                <Twitter size={20} className="text-gray-400 group-hover:text-white" />
+              <a href="#" className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center hover:bg-lazie-primary transition-colors group">
+                <Twitter size={20} className="text-gray-400 group-hover:text-gray-950" />
               </a>
             </div>
           </div>
-          
+
           <div className="lg:col-span-2">
             <h4 className="font-bold text-xl mb-6">Product</h4>
             <ul className="space-y-4 text-gray-400">
-              <li><a href="#" className="hover:text-white transition-colors">Booking</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Payments</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Marketing</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Reporting</a></li>
+              <li><Link to="/features" className="hover:text-white transition-colors">Features</Link></li>
+              <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
+              <li><Link to="/invoicing" className="hover:text-white transition-colors">Invoicing</Link></li>
+              <li><a href="#" className="hover:text-white transition-colors">Marketing (Coming Soon)</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Reporting (Coming Soon)</a></li>
             </ul>
           </div>
-          
+
           <div className="lg:col-span-2">
             <h4 className="font-bold text-xl mb-6">Company</h4>
             <ul className="space-y-4 text-gray-400">
               <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+              <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
               <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
             </ul>
           </div>
-          
+
           <div className="lg:col-span-4">
             <h4 className="font-bold text-xl mb-6">Join our newsletter</h4>
             <p className="text-gray-400 mb-6">Get the latest business tips and platform updates.</p>
             <form className="relative">
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
-                className="w-full bg-gray-900 border border-gray-800 rounded-full py-4 px-6 pr-12 focus:outline-none focus:ring-2 focus:ring-prince focus:border-transparent transition-all"
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="w-full bg-gray-900 border border-gray-800 rounded-full py-4 px-6 pr-12 focus:outline-none focus:ring-2 focus:ring-lazie-primary focus:border-transparent transition-all"
               />
-              <button 
-                type="submit" 
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-prince rounded-full flex items-center justify-center hover:bg-frank transition-colors"
+              <button
+                type="submit"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-lazie-primary rounded-full flex items-center justify-center hover:bg-lazie-primary/80 transition-colors text-gray-950"
               >
                 <ArrowRight size={18} />
               </button>
             </form>
           </div>
         </div>
-        
+
         <div className="pt-12 border-t border-gray-900 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-gray-500 text-sm">
-            © 2026 Fresha Clone. All rights reserved.
+            © 2026 Lazie. All rights reserved.
           </p>
           <div className="flex gap-8 text-sm text-gray-500">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-white transition-colors">Legal Info</a>
+            <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link to="/legal" className="hover:text-white transition-colors">Legal Info</Link>
           </div>
         </div>
       </div>

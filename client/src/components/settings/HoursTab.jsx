@@ -56,7 +56,7 @@ const HoursTab = ({ profile, onHoursUpdate, showToast }) => {
                         type="checkbox"
                         checked={dayObj.isClosed}
                         onChange={(e) => handleUpdate(i, 'isClosed', e.target.checked)}
-                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4"
+                        className="rounded border-gray-300 text-lazie-primary focus:ring-lazie-primary h-4 w-4"
                       />
                       <span>Closed</span>
                     </label>
@@ -85,8 +85,8 @@ const HoursTab = ({ profile, onHoursUpdate, showToast }) => {
           </table>
         </div>
 
-        <div className="flex justify-end">
-          <button type="submit" disabled={loading} className={`py-2 px-6 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${loading ? 'opacity-70' : ''}`}>
+         <div className="flex justify-end">
+          <button type="submit" disabled={loading} className={`py-2.5 px-8 border border-transparent rounded-full shadow-sm text-sm font-bold text-gray-950 bg-lazie-primary hover:brightness-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lazie-primary ${loading ? 'opacity-70' : ''} transition-all uppercase tracking-wide`}>
             {loading ? 'Saving...' : 'Save hours'}
           </button>
         </div>

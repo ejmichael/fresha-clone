@@ -1,36 +1,36 @@
-import React from 'react';
-import { Calendar, CreditCard, BarChart3, Megaphone, Smartphone, ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Calendar, CreditCard, BarChart3, Megaphone, Smartphone, ShieldCheck, ArrowRight } from 'lucide-react';
 
 const features = [
   {
-    icon: <Calendar className="w-8 h-8 text-prince" />,
-    title: "Appointment Scheduling",
-    description: "Manage your calendar with ease. Seamlessly handle bookings and client visits."
+    icon: <Calendar className="w-8 h-8 text-lazie-primary" />,
+    title: "Seamless Scheduling",
+    description: "Manage your calendar with ease. Seamlessly handle bookings and client visits for any service."
   },
   {
-    icon: <CreditCard className="w-8 h-8 text-elton" />,
-    title: "Integrated Payments",
-    description: "Accept all forms of payment securely. Fast payouts and lower transaction fees."
+    icon: <CreditCard className="w-8 h-8 text-lazie-primary" />,
+    title: "Hassle-Free Payments",
+    description: "Accept all forms of payment securely. Fast payouts and lower transaction fees for your convenience."
   },
   {
-    icon: <Megaphone className="w-8 h-8 text-hucknall" />,
-    title: "Marketing Tools",
-    description: "Attract more clients with smart marketing campaigns and automated reminders."
+    icon: <Megaphone className="w-8 h-8 text-lazie-primary" />,
+    title: "Smart Marketing",
+    description: "Attract more clients with automated campaigns and smart reminders tailored to your business."
   },
   {
-    icon: <BarChart3 className="w-8 h-8 text-frank" />,
-    title: "Advanced Reporting",
-    description: "Track your performance with deep insights into sales, staff, and inventory."
+    icon: <BarChart3 className="w-8 h-8 text-lazie-primary" />,
+    title: "Deep Insights",
+    description: "Track your performance with reports into sales, staff, and customer trends."
   },
   {
-    icon: <Smartphone className="w-8 h-8 text-ceelo" />,
-    title: "Mobile App",
-    description: "Run your business on the go with our top-rated app for pros and clients."
+    icon: <Smartphone className="w-8 h-8 text-lazie-primary" />,
+    title: "Mobile Business",
+    description: "Run your entire operation on the go with our top-rated app for pros and clients."
   },
   {
-    icon: <ShieldCheck className="w-8 h-8 text-prince" />,
-    title: "Secure & Reliable",
-    description: "Your data is always safe with enterprise-grade security and 99.9% uptime."
+    icon: <ShieldCheck className="w-8 h-8 text-lazie-primary" />,
+    title: "Secure & Scaling",
+    description: "Your data is always safe with enterprise-grade security as your business grows."
   }
 ];
 
@@ -40,10 +40,10 @@ const Features = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-extrabold text-gray-900 sm:text-5xl mb-4">
-            Powerful tools for <span className="text-prince">your business</span>
+            Powerful tools for <span className="text-lazie-primary italic font-serif drop-shadow-sm">every service</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Everything you need to streamline your operations and delight your clients.
+            Everything you need to streamline your operations and delight your clients, no matter what you do.
           </p>
         </div>
         
@@ -60,6 +60,15 @@ const Features = () => {
               <p className="text-gray-600 leading-relaxed text-lg">{feature.description}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-16 text-center">
+          <Link 
+            to="/features" 
+            className="inline-flex items-center gap-2 px-8 py-4 bg-white border-2 border-pebble rounded-full font-bold text-gray-900 hover:bg-gray-50 transition-all shadow-sm group"
+          >
+            Explore all features <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
       </div>
     </section>

@@ -72,7 +72,10 @@ const RegisterPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center text-4xl text-lazie-primary tracking-tighter font-logo">
+            lazie
+          </h2>
+          <h2 className="mt-6 text-center text-2xl font-bold text-gray-900">
             Register Business
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
@@ -88,12 +91,12 @@ const RegisterPage = () => {
           
           <div>
             <label className="block text-sm font-medium text-gray-700">Business Name</label>
-            <input name="name" type="text" required onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+            <input name="name" type="text" required onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Category</label>
-            <select name="category" value={formData.category} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            <select name="category" value={formData.category} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm">
               <option value="salon">Salon</option>
               <option value="barbershop">Barbershop</option>
               <option value="spa">Spa</option>
@@ -105,40 +108,41 @@ const RegisterPage = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Address</label>
-            <input name="address" type="text" required onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+            <input name="address" type="text" required onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Email Address</label>
-            <input name="email" type="email" required onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+            <input name="email" type="email" required onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Password</label>
-            <input name="password" type="password" required onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+            <input name="password" type="password" required onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
-            <input name="confirmPassword" type="password" required onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+            <input name="confirmPassword" type="password" required onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
           </div>
 
           <div className="pt-2">
             <button
               type="submit"
               disabled={loading}
-              className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-full shadow-sm text-sm font-bold text-gray-900 bg-lazie-primary hover:brightness-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lazie-primary disabled:opacity-50 transition-all uppercase tracking-wide"
             >
               {loading ? 'Registering...' : 'Register'}
             </button>
           </div>
         </form>
         
-        <div className="text-center mt-4">
-          <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500 text-sm">
-            Already have an account? Log in
+        <p className="mt-2 text-center text-sm text-gray-600">
+          Or{' '}
+          <Link to="/login" className="font-medium text-lazie-dark hover:text-lazie-primary">
+            sign in to your existing account
           </Link>
-        </div>
+        </p>
       </div>
     </div>
   );

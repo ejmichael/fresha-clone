@@ -99,7 +99,7 @@ const BookingPage = () => {
       <div className="bg-surface rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="h-1.5 w-full bg-gray-100">
           <div 
-            className="h-full bg-gray-900 transition-all duration-500 ease-in-out" 
+            className="h-full bg-lazie-primary transition-all duration-500 ease-in-out" 
             style={{ width: `${getStepProgress()}%` }} 
           />
         </div>
@@ -182,7 +182,7 @@ const BookingPage = () => {
                   <button 
                     disabled={!selectedTime}
                     onClick={() => setStep(3)}
-                    className="px-6 py-2.5 bg-gray-900 text-white font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition-colors shadow-sm"
+                    className="px-6 py-2.5 bg-lazie-primary text-gray-950 font-bold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-90 transition-colors shadow-sm"
                   >
                     Continue
                   </button>

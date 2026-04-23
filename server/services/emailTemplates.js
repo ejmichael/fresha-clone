@@ -198,3 +198,71 @@ export const ownerNotificationTemplate = (appointment) => `
 </body>
 </html>
 `;
+export const invoiceEmailTemplate = (invoice, business) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 0 auto; background: #ffffff; }
+    .header { background-color: #1D9E75; color: white; padding: 20px; text-align: center; }
+    .content { padding: 30px; border: 1px solid #eee; border-top: none; }
+    .details { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    .details td { padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
+    .label { font-weight: bold; color: #666; }
+    .value { font-weight: 500; color: #111; text-align: right; }
+    .footer { padding: 20px; text-align: center; color: #999; font-size: 12px; }
+    .bank-box { background: #f9f9f9; padding: 15px; border-radius: 6px; margin: 20px 0; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 style="margin:0; font-size: 20px;">Invoice from ${business.name}</h1>
+    </div>
+    <div class="content">
+      <p>Hi ${invoice.clientName},</p>
+      <p>Thank you for choosing <strong>${business.name}</strong>. Please find your invoice details below. Your full invoice is attached as a PDF.</p>
+      
+      <div style="margin: 20px 0;">
+        <span style="font-size: 24px; color: #1D9E75; font-weight: bold;">${invoice.invoiceNumber}</span>
+        <br />
+        <span style="color: #666;">Due: ${invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString() : 'Upon Receipt'}</span>
+      </div>
+
+      <table class="details">
+        ${invoice.lineItems.map(item => `
+          <tr>
+            <td class="label">${item.description}</td>
+            <td class="value">${invoice.currency} ${item.total.toFixed(2)}</td>
+          </tr>
+        `).join('')}
+        <tr>
+          <td class="label" style="border-bottom: none; padding-top: 20px; font-size: 18px;">Total</td>
+          <td class="value" style="border-bottom: none; padding-top: 20px; font-size: 18px; color: #1D9E75; font-weight: bold;">${invoice.currency} ${invoice.total.toFixed(2)}</td>
+        </tr>
+      </table>
+
+      ${business.bankDetails && business.bankDetails.accountNumber ? `
+        <div class="bank-box">
+          <p style="margin-top: 0; font-weight: bold; color: #1D9E75;">How to Pay</p>
+          <p style="margin: 5px 0;">Bank: ${business.bankDetails.bankName}</p>
+          <p style="margin: 5px 0;">Account: ${business.bankDetails.accountName}</p>
+          <p style="margin: 5px 0;">Account #: ${business.bankDetails.accountNumber}</p>
+          <p style="margin: 5px 0;">Branch: ${business.bankDetails.branchCode}</p>
+          <p style="margin: 10px 0 0 0; font-style: italic;">Please use <strong>${invoice.invoiceNumber}</strong> as your reference.</p>
+        </div>
+      ` : ''}
+
+      <p style="font-size: 13px; color: #666; margin-top: 30px;">
+        If you have any questions, please reply directly to this email.
+      </p>
+    </div>
+    <div class="footer">
+      Powered by FreshaClone
+    </div>
+  </div>
+</body>
+</html>
+`;

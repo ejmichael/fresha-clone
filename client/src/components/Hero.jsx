@@ -8,57 +8,56 @@ const Hero = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="lg:grid lg:grid-cols-12 lg:gap-12 items-center">
           <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left">
-            <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold leading-6 text-prince ring-1 ring-inset ring-prince/20 bg-prince/5 mb-6">
+            <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold leading-6 text-lazie-primary ring-1 ring-inset ring-lazie-primary/20 bg-lazie-primary/5 mb-6">
               <span className="flex items-center gap-2">
-                <Users size={14} /> Join 100,000+ businesses globally
+                <Users size={14} /> Join 10,000+ businesses
               </span>
             </div>
-            
+
             <h1 className="text-5xl font-extrabold tracking-tight text-gray-900 sm:text-7xl mb-8 leading-[1.1]">
-              The world's #1 <br />
-              <span className="text-prince italic font-serif">beauty and wellness</span> <br />
-              platform
+              The <span className="text-lazie-primary italic font-serif">Smarter</span> <br />
+              Way to Manage Appointments
             </h1>
-            
+
             <p className="mt-6 text-lg leading-8 text-gray-600 mb-10 max-w-lg">
-              Everything you need to grow your salon or spa. Booking, payments, and automated marketing all in one place.
+              The all-in-one booking system for barbers, spas, coaches, plumbers, and more. Manage bookings, invoicing, payments, and marketing in one place.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 items-center">
-              <Link 
-                to="/register" 
-                className="w-full sm:w-auto px-8 py-4 bg-prince text-white rounded-full text-lg font-bold hover:bg-frank transition-all shadow-xl shadow-prince/30 text-center"
+              <Link
+                to="/register"
+                className="w-full sm:w-auto px-8 py-4 bg-lazie-primary text-gray-950 rounded-full text-lg font-bold hover:brightness-90 transition-all shadow-xl shadow-lazie-primary/30 text-center"
               >
                 Get Started for Free
               </Link>
-              <button className="w-full sm:w-auto px-8 py-4 bg-white text-gray-900 border-2 border-pebble rounded-full text-lg font-bold hover:bg-pebble transition-all flex items-center justify-center gap-2">
-                <Play size={20} className="fill-current" /> Watch Demo
+              <button className="px-8 py-4 border border-gray-200 text-gray-700 rounded-full font-bold hover:bg-gray-50 transition-all flex items-center justify-center gap-2 uppercase tracking-wide">
+                Watch Demo
               </button>
             </div>
-            
+
             <div className="mt-8 flex items-center gap-6 text-sm text-gray-500 font-medium">
-              <span className="flex items-center gap-1.5"><CheckCircle2 size={16} className="text-limelight fill-prince" /> No credit card</span>
-              <span className="flex items-center gap-1.5"><CheckCircle2 size={16} className="text-limelight fill-prince" /> Set up in minutes</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 size={16} className="text-lazie-primary fill-lazie-primary/20" /> No credit card</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 size={16} className="text-lazie-primary fill-lazie-primary/20" /> Set up in minutes</span>
             </div>
           </div>
-          
+
           <div className="mt-16 sm:mt-24 lg:mt-0 lg:col-span-6 relative">
             <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-700">
-              <img 
-                src="/fresha_hero_image_1774283261641.png" 
-                alt="Modern Beauty Salon" 
+              <img
+                src="/busy_owner_hero.png"
+                alt="Happy Business Owner using Lazie"
                 className="w-full h-full object-cover"
               />
             </div>
             {/* Floating badge */}
             <div className="absolute -bottom-10 -left-10 bg-white p-6 rounded-2xl shadow-2xl hidden md:block animate-bounce-slow">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-limelight rounded-full flex items-center justify-center">
-                  <span className="font-bold text-prince">4.9</span>
+                <div className="w-12 h-12 bg-lazie-primary rounded-full flex items-center justify-center">
+                  <span className="font-bold text-gray-950">4.9</span>
                 </div>
                 <div>
                   <p className="font-bold text-gray-900">Highest Rated</p>
-                  <p className="text-sm text-gray-500">On App Store & Play Store</p>
+                  <p className="text-sm text-gray-500">Trusted by Professionals</p>
                 </div>
               </div>
             </div>

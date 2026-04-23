@@ -18,6 +18,24 @@ const businessSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  logo: {
+    type: String,
+    default: null,   // stores Cloudinary URL
+  },
+  invoicePrefix: {
+    type: String,
+    default: 'INV',  // e.g. INV-0001
+  },
+  invoiceNextNumber: {
+    type: Number,
+    default: 1,      // auto-increments with each invoice
+  },
+  bankDetails: {
+    bankName: { type: String, default: '' },
+    accountName: { type: String, default: '' },
+    accountNumber: { type: String, default: '' },
+    branchCode: { type: String, default: '' },
+  },
   operatingHours: [{
     day: { type: Number, min: 0, max: 6 }, // 0=Sun, 6=Sat
     open: String,
