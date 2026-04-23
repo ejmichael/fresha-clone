@@ -34,10 +34,12 @@ if (connection) {
   });
 
   worker.on('error', (err) => {
-    console.error(`[Worker] Error:`, err.message);
+    // Suppress console spam if it's the specific max requests error
     if (err.message.includes('max requests limit exceeded')) {
-      console.log('⚠️ [Worker] Upstash Free Limit Exceeded. Shutting down worker to prevent infinite loops.');
-      worker.close();
+      console.log('⚠️ [Worker] Upstash Free Limit Exceeded. Pausing worker...');
+      worker.pause().catch(() => {});
+    } else {
+      console.error(`[Worker] Error:`, err.message);
     }
   });
 

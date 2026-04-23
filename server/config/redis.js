@@ -2,12 +2,9 @@ import IORedis from 'ioredis';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const redUrl = process.env.REDIS_URL || '';
-const isPlaceholder = !redUrl || 
-  redUrl.includes('YOUR_PASSWORD') || 
-  redUrl.includes('YOUR_ENDPOINT') ||
-  // Force disable Upstash locally to prevent the loop, as dotenv might not overwrite cached shell variables
-  (redUrl.includes('upstash') && process.env.NODE_ENV !== 'production');
+const isPlaceholder = !process.env.REDIS_URL || 
+  process.env.REDIS_URL.includes('YOUR_PASSWORD') || 
+  process.env.REDIS_URL.includes('YOUR_ENDPOINT');
 
 if (isPlaceholder) {
   console.log('⚠️ [Redis] Placeholder credentials detected. Job queue will not be active.');

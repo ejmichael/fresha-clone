@@ -243,9 +243,9 @@ const FeaturesPage = () => {
 
           <div className="mt-16 text-center">
             <p className="text-gray-500 mb-6 font-medium">Need help setting up your integrations?</p>
-            <button className="px-8 py-4 bg-gray-900 text-white rounded-full font-bold text-lg hover:bg-gray-800 transition-all shadow-lg flex items-center gap-2 mx-auto">
+            <Link to="/contact?category=Integration" className="inline-flex px-8 py-4 bg-gray-900 text-white rounded-full font-bold text-lg hover:bg-gray-800 transition-all shadow-lg items-center gap-2 mx-auto">
               <Users className="w-5 h-5" /> Get Integration Support
-            </button>
+            </Link>
           </div>
         </div>
       </section>

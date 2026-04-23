@@ -1,9 +1,14 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { Mail, MapPin, Phone, MessageSquare } from 'lucide-react';
+import { Mail, MapPin, MessageSquare } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 const ContactPage = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const categoryParam = searchParams.get('category');
+  const defaultCategory = categoryParam === 'Integration' ? 'Integration Support' : 'General Inquiry';
   return (
     <div className="min-h-screen flex flex-col font-sans bg-gray-50">
       <Navbar />
@@ -36,6 +41,18 @@ const ContactPage = () => {
                     <div className="mt-2">
                       <input type="text" name="last-name" id="last-name" className="block w-full rounded-md border-0 py-2.5 px-3.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-lazie-primary sm:text-sm sm:leading-6" />
                     </div>
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="category" className="block text-sm font-semibold leading-6 text-gray-900">How can we help you?</label>
+                  <div className="mt-2">
+                    <select id="category" name="category" defaultValue={defaultCategory} className="block w-full rounded-md border-0 py-3 px-3.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-lazie-primary sm:text-sm sm:leading-6 bg-white">
+                      <option value="General Inquiry">General Inquiry</option>
+                      <option value="Integration Support">Integration Support</option>
+                      <option value="Billing & Subscriptions">Billing & Subscriptions</option>
+                      <option value="Technical Support">Technical Support</option>
+                      <option value="Sales">Sales</option>
+                    </select>
                   </div>
                 </div>
                 <div>

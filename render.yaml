@@ -1,9 +1,4 @@
 services:
-  # Internal Redis for Queues
-  - type: redis
-    name: fresha-redis
-    plan: free
-    ipAllowList: [] # internal only
 
   # Backend Web Service
   - type: web
@@ -24,11 +19,6 @@ services:
           type: static
           name: fresha-clone-frontend
           property: host
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: fresha-redis
-          property: connectionString
 
 
   # Frontend Static Site
