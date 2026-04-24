@@ -20,10 +20,12 @@ import AppointmentDetailPage from './pages/AppointmentDetailPage';
 import SettingsPage from './pages/SettingsPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <AuthProvider>
+      <ScrollToTop />
       <div className="min-h-screen bg-background flex flex-col font-sans text-gray-900">
         <main className="flex-grow flex flex-col">
           <Routes>

@@ -24,6 +24,9 @@ export const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    const subscriptionExpiresAt = new Date();
+    subscriptionExpiresAt.setDate(subscriptionExpiresAt.getDate() + 30); // 30 day free trial
+
     const business = await Business.create({
       name,
       slug,
@@ -33,14 +36,16 @@ export const register = async (req, res) => {
       address,
       timezone,
       operatingHours,
-      isVerified: false
+      isVerified: false,
+      subscriptionStatus: 'trialing',
+      subscriptionExpiresAt
     });
 
     if (business) {
       const token = generateToken(business._id, business.email);
       const businessData = business.toObject();
       delete businessData.password;
-      
+
       res.status(201).json({
         token,
         business: businessData
@@ -57,7 +62,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    
+
     if (!email || !password) {
       return res.status(400).json({ message: 'Please provide email and password' });
     }
@@ -92,7 +97,7 @@ export const getMe = async (req, res) => {
     // Populate staff and services as requested
     const { default: Staff } = await import('../models/Staff.js');
     const { default: Service } = await import('../models/Service.js');
-    
+
     const staff = await Staff.find({ business: business._id });
     const services = await Service.find({ business: business._id });
 

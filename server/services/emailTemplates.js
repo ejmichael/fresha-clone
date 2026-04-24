@@ -266,3 +266,39 @@ export const invoiceEmailTemplate = (invoice, business) => `
 </body>
 </html>
 `;
+
+export const trialExpirationTemplate = (business, daysLeft) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: #f9fafb; }
+    .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .header { background-color: #111827; color: white; padding: 30px; text-align: center; }
+    .content { padding: 32px; }
+    .cta { display: inline-block; padding: 14px 28px; background-color: #111827; color: white !important; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin: 20px 0; }
+    .footer { padding: 20px; text-align: center; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 style="margin:0; font-size: 22px;">Your Lazie trial expires in ${daysLeft} days</h1>
+    </div>
+    <div class="content">
+      <p>Hi <strong>${business.name}</strong>,</p>
+      <p>We hope you're loving friction-free scheduling and automated client reminders!</p>
+      <p>Your free trial of the <strong>Lazie Growth Plan</strong> is coming to an end in <strong>${daysLeft} days</strong>. To ensure your clients can continue booking appointments seamlessly, please subscribe to keep your account active.</p>
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${process.env.CLIENT_URL}/dashboard/settings" class="cta">Go to Billing →</a>
+      </div>
+      <p style="color: #6b7280; font-size: 14px;">If you have any questions, simply reply to this email and we'll be happy to help.</p>
+    </div>
+    <div class="footer">
+      Powered by Lazie &middot; You're receiving this because you have an active trial account.
+    </div>
+  </div>
+</body>
+</html>
+`;

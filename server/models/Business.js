@@ -41,7 +41,20 @@ const businessSchema = new mongoose.Schema({
     open: String,
     close: String,
     isClosed: { type: Boolean, default: false }
-  }]
+  }],
+  subscriptionStatus: {
+    type: String,
+    enum: ['trialing', 'active', 'past_due', 'canceled'],
+    default: 'trialing'
+  },
+  payfastToken: {
+    type: String,
+    default: null
+  },
+  subscriptionExpiresAt: {
+    type: Date,
+    default: null
+  }
 });
 
 export default mongoose.model('Business', businessSchema);

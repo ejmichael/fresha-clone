@@ -12,8 +12,10 @@ import authRoutes from './routes/auth.js';
 import dashboardRoutes from './routes/dashboard.js';
 import settingsRoutes from './routes/settings.js';
 import invoiceRoutes from './routes/invoices.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 
 import './workers/emailWorker.js';
+import startCronJobs from './workers/cronJobs.js';
 
 const app = express();
 const PORT = process.env.PORT || 5011;
@@ -38,13 +40,18 @@ app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/invoices', invoiceRoutes);
+app.use('/api/payments', paymentRoutes);
 
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Connected to MongoDB');
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(`✅ Server running on port ${PORT}`);
+      console.log(`🌍 API ready for requests at http://localhost:${PORT}/api`);
+      
+      // Fire up the daily CRON sweeps
+      startCronJobs();
     });
   } catch (err) {
     console.error('MongoDB connection error:', err);

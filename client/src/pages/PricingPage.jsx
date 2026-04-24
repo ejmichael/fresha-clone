@@ -1,10 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { CheckCircle2, Star } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { CheckCircle2, Loader2 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import api from '../api/api';
 
 const PricingPage = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const handleSubscribe = async () => {
+    if (!user) {
+      navigate('/register');
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const { data } = await api.get('/payments/checkout');
+      
+      // Dynamically auto-submit to PayFast
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = data.payfastUrl;
+      
+      for (const key in data.paymentData) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = data.paymentData[key];
+        form.appendChild(input);
+      }
+      
+      document.body.appendChild(form);
+      form.submit();
+    } catch (e) {
+      console.error(e);
+      alert('Could not initialize secure checkout. Please try again.');
+      setLoading(false);
+    }
+  };
   const tiers = [
     {
       name: '',
@@ -63,15 +100,16 @@ const PricingPage = () => {
                   <span className="text-sm font-semibold leading-6 text-gray-500">/month</span>
                 </div>
 
-                <Link
-                  to="/register"
-                  className={`block w-full text-center rounded-xl px-6 py-4 text-base font-bold transition-all shadow-md ${tier.highlighted
-                    ? 'bg-lazie-primary text-gray-950 hover:brightness-95'
-                    : 'bg-gray-900 text-white hover:bg-gray-800'
+                <button
+                  onClick={handleSubscribe}
+                  disabled={loading}
+                  className={`block w-full text-center rounded-xl px-6 py-4 text-base font-bold transition-all shadow-md flex justify-center items-center gap-2 ${tier.highlighted
+                    ? 'bg-lazie-primary text-gray-950 hover:brightness-95 disabled:opacity-50'
+                    : 'bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50'
                     }`}
                 >
-                  {tier.cta}
-                </Link>
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : tier.cta}
+                </button>
 
                 <ul className="mt-8 space-y-4 text-sm leading-6 text-gray-600">
                   {tier.features.map((feature, fIndex) => (

@@ -6,6 +6,7 @@ import ProfileTab from '../components/settings/ProfileTab.jsx';
 import HoursTab from '../components/settings/HoursTab.jsx';
 import ServicesTab from '../components/settings/ServicesTab.jsx';
 import StaffTab from '../components/settings/StaffTab.jsx';
+import BillingTab from '../components/settings/BillingTab.jsx';
 
 const SettingsPage = () => {
   const { token } = useAuth();
@@ -44,7 +45,8 @@ const SettingsPage = () => {
     { id: 'profile', label: 'Profile' },
     { id: 'hours', label: 'Hours' },
     { id: 'services', label: 'Services' },
-    { id: 'staff', label: 'Staff' }
+    { id: 'staff', label: 'Staff' },
+    { id: 'billing', label: 'Billing' }
   ];
 
   return (
@@ -74,6 +76,7 @@ const SettingsPage = () => {
             {activeTab === 'hours' && <HoursTab profile={profile} onHoursUpdate={setProfile} showToast={showToast} />}
             {activeTab === 'services' && <ServicesTab services={services} staff={staff} onServicesChange={setServices} showToast={showToast} />}
             {activeTab === 'staff' && <StaffTab staff={staff} profile={profile} onStaffChange={setStaff} showToast={showToast} />}
+            {activeTab === 'billing' && <BillingTab profile={profile} showToast={showToast} />}
           </>
         )}
       </div>

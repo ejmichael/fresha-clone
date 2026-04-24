@@ -12,7 +12,7 @@ const ContactPage = () => {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-gray-50">
       <Navbar />
-      
+
       <main className="flex-grow pt-32 pb-24">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -24,7 +24,7 @@ const ContactPage = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 gap-16 max-w-5xl mx-auto">
             {/* Contact Form */}
             <div className="bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a message</h2>
@@ -74,7 +74,7 @@ const ContactPage = () => {
             </div>
 
             {/* Contact Info */}
-            <div className="flex flex-col justify-center space-y-10">
+            {/* <div className="flex flex-col justify-center space-y-10">
               <div className="flex gap-x-6">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-lazie-primary/10">
                   <Mail className="h-6 w-6 text-lazie-dark" aria-hidden="true" />
@@ -104,7 +104,7 @@ const ContactPage = () => {
                   <p className="mt-2 font-semibold text-lazie-dark">sales@lazie.com</p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </main>

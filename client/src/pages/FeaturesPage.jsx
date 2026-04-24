@@ -2,14 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { 
-  Calendar, 
-  CreditCard, 
-  Users, 
-  ArrowRight, 
-  CheckCircle2, 
-  Smartphone, 
-  BarChart3, 
+import {
+  Calendar,
+  CreditCard,
+  Users,
+  ArrowRight,
+  CheckCircle2,
+  Smartphone,
+  BarChart3,
   ShieldCheck,
 } from 'lucide-react';
 
@@ -17,7 +17,7 @@ const FeaturesPage = () => {
   return (
     <div className="bg-white min-h-screen">
       <Navbar />
-      
+
       {/* Light Hero Section */}
       <section className="relative pt-32 pb-24 overflow-hidden bg-pebble/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -33,16 +33,16 @@ const FeaturesPage = () => {
               <Link to="/register" className="px-10 py-5 bg-lazie-primary text-gray-950 rounded-full font-bold text-lg hover:brightness-95 transition-all shadow-xl shadow-lazie-primary/20">
                 Get Started Now
               </Link>
-              <button 
+              {/* <button 
                 onClick={() => document.getElementById('integrations').scrollIntoView({ behavior: 'smooth' })} 
                 className="px-10 py-5 bg-white border-2 border-pebble rounded-full font-bold text-lg hover:bg-gray-50 transition-all text-gray-900"
               >
                 Explore Integrations
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
-        
+
         {/* Abstract background elements */}
         <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[600px] h-[600px] bg-lazie-primary/10 rounded-full blur-3xl opacity-50" />
         <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 w-[600px] h-[600px] bg-prince/5 rounded-full blur-3xl opacity-50" />
@@ -76,9 +76,9 @@ const FeaturesPage = () => {
             </div>
             <div className="order-1 lg:order-2">
               <div className="p-4 bg-pebble/50 rounded-[40px] shadow-sm transform hover:scale-[1.02] transition-transform duration-500">
-                <img 
-                  src="/features/scheduling.png" 
-                  alt="Scheduling Dashboard" 
+                <img
+                  src="/features/scheduling.png"
+                  alt="Scheduling Dashboard"
                   className="rounded-[32px] shadow-2xl w-full"
                 />
               </div>
@@ -112,9 +112,9 @@ const FeaturesPage = () => {
             </div>
             <div className="lg:order-1">
               <div className="p-4 bg-red-50/50 rounded-[40px] shadow-sm transform -rotate-2 hover:rotate-0 transition-transform duration-500">
-                <img 
-                  src="/features/reminders.png" 
-                  alt="Reminders UI" 
+                <img
+                  src="/features/reminders.png"
+                  alt="Reminders UI"
                   className="rounded-[32px] shadow-2xl w-full"
                 />
               </div>
@@ -149,9 +149,9 @@ const FeaturesPage = () => {
             </div>
             <div className="lg:order-2">
               <div className="p-4 bg-pebble/50 rounded-[40px] shadow-sm transform rotate-1 hover:rotate-0 transition-transform duration-500">
-                <img 
-                  src="/features/invoice.png" 
-                  alt="Invoicing Interface" 
+                <img
+                  src="/features/invoice.png"
+                  alt="Invoicing Interface"
                   className="rounded-[32px] shadow-2xl w-full"
                 />
               </div>
@@ -185,9 +185,9 @@ const FeaturesPage = () => {
             </div>
             <div className="lg:order-1">
               <div className="p-4 bg-prince/10 rounded-[40px] shadow-sm transform hover:scale-[1.02] transition-transform duration-500">
-                <img 
-                  src="/features/team.png" 
-                  alt="Team Management Dashboard" 
+                <img
+                  src="/features/team.png"
+                  alt="Team Management Dashboard"
                   className="rounded-[32px] shadow-2xl w-full"
                 />
               </div>
@@ -249,15 +249,15 @@ const FeaturesPage = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Final CTA */}
       <section className="py-32 bg-white">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="p-16 bg-lazie-primary/5 rounded-[60px] border border-lazie-primary/20">
             <h2 className="text-5xl font-extrabold text-gray-900 mb-6 tracking-tight">Ready to scale your business?</h2>
             <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">Join thousands of professionals already using lazie to manage their passion and grow their revenue.</p>
-            <Link 
-              to="/register" 
+            <Link
+              to="/register"
               className="inline-block px-12 py-5 bg-lazie-primary text-gray-950 rounded-full font-bold text-xl hover:brightness-95 transition-all shadow-2xl shadow-lazie-primary/30"
             >
               Start Your Free Trial

@@ -1,5 +1,6 @@
 import express from 'express';
 import { protect } from '../middleware/auth.js';
+import { subscriptionGuard } from '../middleware/subscriptionGuard.js';
 import {
   getAppointments,
   getAppointmentById,
@@ -10,6 +11,7 @@ import {
 const router = express.Router();
 
 router.use(protect);
+router.use(subscriptionGuard);
 
 router.get('/appointments', getAppointments);
 router.get('/appointments/:id', getAppointmentById);

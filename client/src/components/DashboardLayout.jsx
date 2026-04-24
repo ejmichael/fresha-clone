@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Calendar, ListTodo, Users, Settings, LogOut, Menu, X, FileText } from 'lucide-react';
+import { Calendar, FileText, Users, Settings, LogOut, Menu, X, AlertTriangle, CreditCard } from 'lucide-react';
 
 const DashboardLayout = () => {
   const { business, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (!business) return null;
+
+  // Calculate trial expiry from cached profile
+  const isTrialing = business.subscriptionStatus === 'trialing';
+  const isActive = business.subscriptionStatus === 'active';
+  const expiresAt = business.subscriptionExpiresAt ? new Date(business.subscriptionExpiresAt) : null;
+  const now = new Date();
+  const daysLeft = expiresAt ? Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24)) : null;
+  const trialExpired = isTrialing && daysLeft !== null && daysLeft <= 0;
+  const trialWarningSoon = isTrialing && daysLeft !== null && daysLeft > 0 && daysLeft <= 7;
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -69,8 +78,35 @@ const DashboardLayout = () => {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-y-auto pt-16 lg:pt-0">
-        <Outlet />
+      <main className="flex-1 overflow-y-auto pt-16 lg:pt-0 flex flex-col">
+        {/* Trial banners */}
+        {trialExpired && (
+          <div className="bg-red-600 text-white px-4 py-3 flex items-center justify-between gap-4 flex-shrink-0">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 shrink-0" />
+              <span className="text-sm font-medium">Your free trial has expired. Subscribe to re-activate your account.</span>
+            </div>
+            <Link to="/dashboard/settings" className="flex items-center gap-1.5 bg-white text-red-600 font-bold text-xs px-3 py-1.5 rounded-full hover:bg-red-50 transition-colors shrink-0">
+              <CreditCard className="w-3.5 h-3.5" /> Subscribe Now
+            </Link>
+          </div>
+        )}
+        {trialWarningSoon && (
+          <div className="bg-amber-50 border-b border-amber-200 px-4 py-2.5 flex items-center justify-between gap-4 flex-shrink-0">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+              <span className="text-sm text-amber-800">Your free trial expires in <strong>{daysLeft} day{daysLeft !== 1 ? 's' : ''}</strong>.</span>
+            </div>
+            <Link to="/dashboard/settings" className="text-xs font-semibold text-amber-700 hover:text-amber-900 shrink-0 underline">
+              Go to Billing
+            </Link>
+          </div>
+        )}
+        {/* Blur overlay when trial is hard-expired */}
+        <div className={`flex-1 relative ${trialExpired ? 'pointer-events-none' : ''}`}>
+          {trialExpired && <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10" />}
+          <Outlet />
+        </div>
       </main>
     </div>
   );

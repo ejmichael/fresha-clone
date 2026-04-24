@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 import dotenv from 'dotenv';
 import Appointment from '../models/Appointment.js';
 import { generateICS, generateGoogleCalendarLink } from './calendarService.js';
-import { confirmationTemplate, reminderTemplate, cancellationTemplate, ownerNotificationTemplate } from './emailTemplates.js';
+import { confirmationTemplate, reminderTemplate, cancellationTemplate, ownerNotificationTemplate, trialExpirationTemplate } from './emailTemplates.js';
 
 dotenv.config();
 
@@ -142,5 +142,29 @@ export const sendOwnerNotificationEmail = async (appointmentId) => {
   } catch (error) {
     console.error('sendOwnerNotificationEmail error:', error);
     throw error;
+  }
+};
+
+export const sendTrialExpirationEmail = async (business) => {
+  try {
+    const daysLeft = 7;
+    const html = trialExpirationTemplate(business, daysLeft);
+
+    if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 're_mock_key') {
+      console.log(`[Mock Email] Trial expiration warning sent to ${business.email}`);
+      return;
+    }
+
+    await resend.emails.send({
+      from: EMAIL_FROM,
+      to: [business.email],
+      reply_to: EMAIL_FROM,
+      subject: `Action Required: Your Lazie trial expires in ${daysLeft} days`,
+      html
+    });
+    console.log(`[Trials] Warning email strictly sent to ${business.email}`);
+  } catch (error) {
+    console.error('sendTrialExpirationEmail error:', error);
+    // Don't throw so failure on one cron doesn't crash batch
   }
 };
