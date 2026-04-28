@@ -14,9 +14,12 @@ export const subscriptionGuard = async (req, res, next) => {
       return res.status(404).json({ message: 'Business not found' });
     }
 
-    // Active subscribers always pass
-    if (business.subscriptionStatus === 'active') {
-      return next();
+    // Handle new users who need to provide card details
+    if (business.subscriptionStatus === 'pending_setup') {
+      return res.status(403).json({
+        message: 'Please complete your account setup by providing card details for your free trial.',
+        setupRequired: true
+      });
     }
 
     // Check if trial has expired

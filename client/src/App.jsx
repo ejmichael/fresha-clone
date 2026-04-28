@@ -18,6 +18,7 @@ import DashboardPage from './pages/DashboardPage';
 import InvoicesPage from './pages/InvoicesPage';
 import AppointmentDetailPage from './pages/AppointmentDetailPage';
 import SettingsPage from './pages/SettingsPage';
+import BusinessSettingsPage from './pages/BusinessSettingsPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
@@ -50,6 +51,7 @@ function App() {
                 <Route index element={<DashboardPage />} />
                 <Route path="appointments/:id" element={<AppointmentDetailPage />} />
                 <Route path="invoices" element={<InvoicesPage />} />
+                <Route path="business" element={<BusinessSettingsPage />} />
                 <Route path="settings" element={<SettingsPage />} />
               </Route>
             </Route>

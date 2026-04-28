@@ -28,6 +28,13 @@ export const createSubscriptionCheckout = async (req, res) => {
     const business = await Business.findById(businessId);
     if (!business) return res.status(404).json({ message: 'Business not found' });
 
+    // Calculate billing date: 30 days starting from today if they are in pending_setup
+    let billingDate = new Date();
+    if (business.subscriptionStatus === 'pending_setup') {
+      billingDate.setDate(billingDate.getDate() + 30);
+    }
+    const billingDateString = billingDate.toISOString().split('T')[0];
+
     // The data payload for a PayFast Subscription
     const paymentData = {
       merchant_id: process.env.PAYFAST_MERCHANT_ID,
@@ -42,7 +49,7 @@ export const createSubscriptionCheckout = async (req, res) => {
       amount: '149.00',                // Monthly cost for Growth plan
       item_name: 'Lazie Growth Subscription',
       subscription_type: '1',          // 1 = Subscription
-      billing_date: new Date().toISOString().split('T')[0], // Start billing immediately
+      billing_date: billingDateString, // The date for the first payment (today or in 30 days)
       recurring_amount: '149.00',
       frequency: '3',                  // 3 = Monthly
       cycles: '0',                     // 0 = Indefinite
@@ -80,19 +87,35 @@ export const payfastITNWebhook = async (req, res) => {
     const businessId = pfData.m_payment_id;
     const token = pfData.token; // The recurring billing token
 
-    if (paymentStatus === 'COMPLETE') {
+    if (businessId) {
       const business = await Business.findById(businessId);
       if (business) {
-        business.subscriptionStatus = 'active';
         business.payfastToken = token;
-        
-        // Extend expiration by 31 days
-        const expiration = new Date();
-        expiration.setDate(expiration.getDate() + 31);
-        business.subscriptionExpiresAt = expiration;
+
+        // If the payment is COMPLETE, it means a charge was actually made
+        if (paymentStatus === 'COMPLETE') {
+          business.subscriptionStatus = 'active';
+          
+          // Extend expiration by 31 days from today
+          const expiration = new Date();
+          expiration.setDate(expiration.getDate() + 31);
+          business.subscriptionExpiresAt = expiration;
+          
+          console.log(`[ITN] Successfully activated PAID subscription for business ${businessId}`);
+        } 
+        // If it's NOT complete but we have a token and they were pending, it's a trial setup
+        else if (business.subscriptionStatus === 'pending_setup' && token) {
+          business.subscriptionStatus = 'trialing';
+          
+          // Set trial expiration exactly 30 days from now
+          const trialEnd = new Date();
+          trialEnd.setDate(trialEnd.getDate() + 30);
+          business.subscriptionExpiresAt = trialEnd;
+          
+          console.log(`[ITN] Successfully started GATED TRIAL for business ${businessId}`);
+        }
 
         await business.save();
-        console.log(`[ITN] Successfully activated subscription for business ${businessId}`);
       }
     }
 

@@ -44,8 +44,8 @@ const businessSchema = new mongoose.Schema({
   }],
   subscriptionStatus: {
     type: String,
-    enum: ['trialing', 'active', 'past_due', 'canceled'],
-    default: 'trialing'
+    enum: ['pending_setup', 'trialing', 'active', 'past_due', 'canceled'],
+    default: 'pending_setup'
   },
   payfastToken: {
     type: String,

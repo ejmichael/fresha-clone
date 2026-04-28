@@ -24,9 +24,6 @@ export const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const subscriptionExpiresAt = new Date();
-    subscriptionExpiresAt.setDate(subscriptionExpiresAt.getDate() + 30); // 30 day free trial
-
     const business = await Business.create({
       name,
       slug,
@@ -37,8 +34,8 @@ export const register = async (req, res) => {
       timezone,
       operatingHours,
       isVerified: false,
-      subscriptionStatus: 'trialing',
-      subscriptionExpiresAt
+      subscriptionStatus: 'pending_setup',
+      subscriptionExpiresAt: null // Set once payment is configured
     });
 
     if (business) {
@@ -58,7 +55,6 @@ export const register = async (req, res) => {
     res.status(500).json({ message: 'Server error during registration' });
   }
 };
-
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
