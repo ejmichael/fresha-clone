@@ -206,6 +206,51 @@ const InvoicesPage = () => {
 
         <form onSubmit={(e) => handleSubmit(e, false)} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
+            {/* Appointment Link */}
+            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+              <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">Link to Appointment</h2>
+              <div className="relative">
+                <select 
+                  value={formData.appointmentId} 
+                  onChange={(e) => {
+                    const apptId = e.target.value;
+                    if (!apptId) {
+                      setFormData({ ...formData, appointmentId: '' });
+                      return;
+                    }
+                    const appt = recentAppointments.find(a => a._id === apptId);
+                    if (appt) {
+                      setFormData({
+                        ...formData,
+                        appointmentId: apptId,
+                        clientName: appt.clientName,
+                        clientEmail: appt.clientEmail,
+                        clientPhone: appt.clientPhone || '',
+                        lineItems: [{
+                          description: appt.service?.name || 'Service',
+                          quantity: 1,
+                          unitPrice: appt.service?.price || 0,
+                          total: appt.service?.price || 0
+                        }]
+                      });
+                    }
+                  }}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 appearance-none outline-none text-gray-700"
+                >
+                  <option value="">Select a recent completed appointment...</option>
+                  {recentAppointments.map(appt => (
+                    <option key={appt._id} value={appt._id}>
+                      {appt.clientName} - {appt.service?.name} ({format(new Date(appt.startTime), 'MMM d, h:mm a')})
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                </div>
+              </div>
+              <p className="mt-2 text-xs text-gray-400">Selecting an appointment will automatically fill in client and service details.</p>
+            </div>
+
             {/* Client Details */}
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
               <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">Client Details</h2>

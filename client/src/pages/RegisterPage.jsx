@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { registerBusiness } from '../api/api';
+import { Eye, EyeOff } from 'lucide-react';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +12,8 @@ const RegisterPage = () => {
     password: '',
     confirmPassword: ''
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
@@ -116,14 +118,40 @@ const RegisterPage = () => {
             <input name="email" type="email" required onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
           </div>
 
-          <div>
+          <div className="relative">
             <label className="block text-sm font-medium text-gray-700">Password</label>
-            <input name="password" type="password" required onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
+            <input 
+              name="password" 
+              type={showPassword ? 'text' : 'password'} 
+              required 
+              onChange={handleChange} 
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm pr-10" 
+            />
+            <button
+              type="button"
+              className="absolute right-3 top-[32px] text-gray-400 hover:text-gray-600 focus:outline-none"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
 
-          <div>
+          <div className="relative">
             <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
-            <input name="confirmPassword" type="password" required onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
+            <input 
+              name="confirmPassword" 
+              type={showConfirmPassword ? 'text' : 'password'} 
+              required 
+              onChange={handleChange} 
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm pr-10" 
+            />
+            <button
+              type="button"
+              className="absolute right-3 top-[32px] text-gray-400 hover:text-gray-600 focus:outline-none"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
 
           <div className="pt-2">

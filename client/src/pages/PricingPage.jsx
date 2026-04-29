@@ -7,25 +7,25 @@ import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
 
 const PricingPage = () => {
-  const { user } = useAuth();
+  const { business } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const handleSubscribe = async () => {
-    if (!user) {
+    if (!business) {
       navigate('/register');
       return;
     }
-    
+
     setLoading(true);
     try {
       const { data } = await api.get('/payments/checkout');
-      
+
       // Dynamically auto-submit to PayFast
       const form = document.createElement('form');
       form.method = 'POST';
       form.action = data.payfastUrl;
-      
+
       for (const key in data.paymentData) {
         const input = document.createElement('input');
         input.type = 'hidden';
@@ -33,7 +33,7 @@ const PricingPage = () => {
         input.value = data.paymentData[key];
         form.appendChild(input);
       }
-      
+
       document.body.appendChild(form);
       form.submit();
     } catch (e) {
@@ -71,7 +71,7 @@ const PricingPage = () => {
               Simple, transparent pricing
             </h1>
             <p className="text-xl text-gray-600">
-              No hidden fees. No surprise charges. Choose the plan that best fits your business needs and grow with <span className="font-serif italic text-lazie-primary font-bold">Lazie</span>.
+              No hidden fees. No surprise charges. The plan that best fits your business needs and grow with <span className="font-serif italic text-lazie-primary font-bold">Lazie</span>.
             </p>
           </div>
 

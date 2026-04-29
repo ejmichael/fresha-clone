@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Calendar, FileText, Users, Settings, LogOut, Menu, X, AlertTriangle, CreditCard, Store, UserCog } from 'lucide-react';
+import { Calendar, FileText, Users, Settings, LogOut, Menu, X, AlertTriangle, CreditCard, Store, UserCog, Loader2 } from 'lucide-react';
+import api from '../api/api';
 
 const DashboardLayout = () => {
   const { business, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activating, setActivating] = useState(false);
 
   if (!business) return null;
 
@@ -19,6 +21,32 @@ const DashboardLayout = () => {
   const trialExpired = isTrialing && daysLeft !== null && daysLeft <= 0;
   const trialWarningSoon = isTrialing && daysLeft !== null && daysLeft > 0 && daysLeft <= 7;
   const setupRequired = isPendingSetup;
+
+  const handleActivateTrial = async () => {
+    setActivating(true);
+    try {
+      const { data } = await api.get('/payments/checkout');
+      
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = data.payfastUrl;
+      
+      for (const key in data.paymentData) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = data.paymentData[key];
+        form.appendChild(input);
+      }
+      
+      document.body.appendChild(form);
+      form.submit();
+    } catch (e) {
+      console.error(e);
+      alert('Could not initialize secure checkout. Please try again.');
+      setActivating(false);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -98,9 +126,13 @@ const DashboardLayout = () => {
               <CreditCard className="w-5 h-5 shrink-0" />
               <span className="text-sm font-bold">One last step: Provide card details to start your 30-day free trial. You won't be charged today.</span>
             </div>
-            <Link to="/pricing" className="flex items-center gap-1.5 bg-gray-950 text-white font-bold text-xs px-3 py-1.5 rounded-full hover:bg-gray-800 transition-colors shrink-0">
-               Activate Trial →
-            </Link>
+            <button 
+              onClick={handleActivateTrial}
+              disabled={activating}
+              className="flex items-center gap-1.5 bg-gray-950 text-white font-bold text-xs px-4 py-2 rounded-full hover:bg-gray-800 transition-colors shrink-0 disabled:opacity-50"
+            >
+               {activating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Activate Trial →'}
+            </button>
           </div>
         )}
         {trialExpired && (

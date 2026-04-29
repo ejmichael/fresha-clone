@@ -4,7 +4,9 @@ import { useToast } from '../hooks/useToast.jsx';
 import { getProfile, getServices, getStaff } from '../api/api';
 import HoursTab from '../components/settings/HoursTab.jsx';
 import ServicesTab from '../components/settings/ServicesTab.jsx';
+import ServicesTab from '../components/settings/ServicesTab.jsx';
 import StaffTab from '../components/settings/StaffTab.jsx';
+import BankingTab from '../components/settings/BankingTab.jsx';
 
 const BusinessSettingsPage = () => {
   const { token } = useAuth();
@@ -42,7 +44,8 @@ const BusinessSettingsPage = () => {
   const tabs = [
     { id: 'hours', label: 'Operating Hours' },
     { id: 'services', label: 'Services' },
-    { id: 'staff', label: 'Staff' }
+    { id: 'staff', label: 'Staff' },
+    { id: 'banking', label: 'Banking & Invoices' }
   ];
 
   return (
@@ -72,6 +75,7 @@ const BusinessSettingsPage = () => {
             {activeTab === 'hours' && <HoursTab profile={profile} onHoursUpdate={setProfile} showToast={showToast} />}
             {activeTab === 'services' && <ServicesTab services={services} staff={staff} onServicesChange={setServices} showToast={showToast} />}
             {activeTab === 'staff' && <StaffTab staff={staff} profile={profile} onStaffChange={setStaff} showToast={showToast} />}
+            {activeTab === 'banking' && <BankingTab profile={profile} onProfileUpdate={setProfile} showToast={showToast} />}
           </>
         )}
       </div>

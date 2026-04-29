@@ -10,14 +10,6 @@ const ProfileTab = ({ profile, onProfileUpdate, showToast }) => {
     description: profile?.description || '',
     timezone: profile?.timezone || 'Africa/Johannesburg',
     notificationEmail: profile?.notificationEmail || '',
-    invoicePrefix: profile?.invoicePrefix || 'INV',
-    taxRate: profile?.taxRate || 0,
-    bankDetails: {
-      bankName: profile?.bankDetails?.bankName || '',
-      accountName: profile?.bankDetails?.accountName || '',
-      accountNumber: profile?.bankDetails?.accountNumber || '',
-      branchCode: profile?.bankDetails?.branchCode || '',
-    }
   });
   const [loading, setLoading] = useState(false);
 
@@ -26,15 +18,7 @@ const ProfileTab = ({ profile, onProfileUpdate, showToast }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name.startsWith('bankDetails.')) {
-      const field = name.split('.')[1];
-      setFormData({
-        ...formData,
-        bankDetails: { ...formData.bankDetails, [field]: value }
-      });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData({ ...formData, [name]: value });
   };
   const handlePwChange = (e) => setPwData({ ...pwData, [e.target.name]: e.target.value });
 
@@ -160,7 +144,7 @@ const ProfileTab = ({ profile, onProfileUpdate, showToast }) => {
             <div>
               <label className="block text-sm font-medium text-gray-700">Slug</label>
               <input name="slug" type="text" value={formData.slug} onChange={handleChange} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
-              <p className="mt-1 text-xs text-gray-500">Your booking link: https://fresha-clone-app.onrender.com/book/{formData.slug}</p>
+              <p className="mt-1 text-xs text-gray-500">Your booking link: https://lazie.co.za/book/{formData.slug}</p>
             </div>
           </div>
 
@@ -199,43 +183,6 @@ const ProfileTab = ({ profile, onProfileUpdate, showToast }) => {
             <textarea name="description" value={formData.description} onChange={handleChange} rows="3" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm"></textarea>
           </div>
 
-          <div className="pt-6 border-t border-gray-100">
-            <h3 className="text-md font-bold text-gray-900 mb-4">Invoice Settings</h3>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Invoice Prefix</label>
-                <input name="invoicePrefix" type="text" value={formData.invoicePrefix} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
-                <p className="mt-1 text-xs text-gray-500">Preview: {formData.invoicePrefix}-0001</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Default Tax Rate (%)</label>
-                <input name="taxRate" type="number" value={formData.taxRate} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
-              </div>
-            </div>
-
-            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Bank Name</label>
-                <input name="bankDetails.bankName" type="text" value={formData.bankDetails.bankName} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Account Name</label>
-                <input name="bankDetails.accountName" type="text" value={formData.bankDetails.accountName} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
-              </div>
-            </div>
-
-            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Account Number</label>
-                <input name="bankDetails.accountNumber" type="text" value={formData.bankDetails.accountNumber} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Branch Code</label>
-                <input name="bankDetails.branchCode" type="text" value={formData.bankDetails.branchCode} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
-              </div>
-            </div>
-          </div>
-
           <div className="flex justify-end pt-2">
             <button type="submit" disabled={loading || logoUploading} className={`py-2.5 px-6 border border-transparent rounded-full shadow-sm text-sm font-bold text-gray-950 bg-lazie-primary hover:brightness-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lazie-primary ${(loading || logoUploading) ? 'opacity-70 text-gray-400' : ''} transition-all uppercase tracking-wide`}>
               {loading ? 'Saving...' : 'Save Profile'}
@@ -246,30 +193,30 @@ const ProfileTab = ({ profile, onProfileUpdate, showToast }) => {
 
       <hr className="border-gray-200" />
 
-      {/* Password Section */}
-      <section>
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Change Password</h2>
-        <form onSubmit={handlePasswordSubmit} className="space-y-4 max-w-sm">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Current Password</label>
-            <input name="currentPassword" type="password" value={pwData.currentPassword} onChange={handlePwChange} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">New Password</label>
-            <input name="newPassword" type="password" value={pwData.newPassword} onChange={handlePwChange} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Confirm New Password</label>
-            <input name="confirmPassword" type="password" value={pwData.confirmPassword} onChange={handlePwChange} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
-          </div>
-          <div className="pt-2">
-            <button type="submit" disabled={pwLoading} className={`w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 ${pwLoading ? 'opacity-70' : ''}`}>
-              {pwLoading ? 'Updating...' : 'Update Password'}
-            </button>
-          </div>
-        </form>
-      </section>
-    </div>
+      {/* Password Section */ }
+  <section>
+    <h2 className="text-lg font-bold text-gray-900 mb-4">Change Password</h2>
+    <form onSubmit={handlePasswordSubmit} className="space-y-4 max-w-sm">
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Current Password</label>
+        <input name="currentPassword" type="password" value={pwData.currentPassword} onChange={handlePwChange} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">New Password</label>
+        <input name="newPassword" type="password" value={pwData.newPassword} onChange={handlePwChange} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Confirm New Password</label>
+        <input name="confirmPassword" type="password" value={pwData.confirmPassword} onChange={handlePwChange} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-lazie-primary focus:border-lazie-primary sm:text-sm" />
+      </div>
+      <div className="pt-2">
+        <button type="submit" disabled={pwLoading} className={`w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 ${pwLoading ? 'opacity-70' : ''}`}>
+          {pwLoading ? 'Updating...' : 'Update Password'}
+        </button>
+      </div>
+    </form>
+  </section>
+    </div >
   );
 };
 

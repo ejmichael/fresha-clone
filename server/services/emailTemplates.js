@@ -260,7 +260,7 @@ export const invoiceEmailTemplate = (invoice, business) => `
       </p>
     </div>
     <div class="footer">
-      Powered by FreshaClone
+      Powered by Lazie
     </div>
   </div>
 </body>

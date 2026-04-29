@@ -153,7 +153,7 @@ export const generateInvoicePDF = async (invoice) => {
         .fontSize(10)
         .fillColor('#999999')
         .text('Thank you for your business', 0, footerY, { align: 'center' })
-        .text(business.name, 0, footerY + 15, { align: 'center' });
+        .text('Simplify with Lazie', 0, footerY + 15, { align: 'center' });
 
       doc.end();
     } catch (err) {
