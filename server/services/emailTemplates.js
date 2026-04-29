@@ -301,6 +301,8 @@ export const trialExpirationTemplate = (business, daysLeft) => `
   </div>
 </body>
 </html>
+`;
+
 export const welcomeEmailTemplate = (business) => `
 <!DOCTYPE html>
 <html>
