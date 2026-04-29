@@ -4,7 +4,6 @@ import { useToast } from '../hooks/useToast.jsx';
 import { getProfile, getServices, getStaff } from '../api/api';
 import HoursTab from '../components/settings/HoursTab.jsx';
 import ServicesTab from '../components/settings/ServicesTab.jsx';
-import ServicesTab from '../components/settings/ServicesTab.jsx';
 import StaffTab from '../components/settings/StaffTab.jsx';
 import BankingTab from '../components/settings/BankingTab.jsx';
 
