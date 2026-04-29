@@ -1,6 +1,6 @@
 import { Worker } from 'bullmq';
 import connection from '../config/redis.js';
-import { sendConfirmationEmail, sendReminderEmail, sendCancellationEmail, sendOwnerNotificationEmail } from '../services/emailService.js';
+import { sendConfirmationEmail, sendReminderEmail, sendCancellationEmail, sendOwnerNotificationEmail, sendWelcomeEmail } from '../services/emailService.js';
 
 if (connection) {
   const worker = new Worker('emails', async (job) => {
@@ -21,6 +21,11 @@ if (connection) {
 
     if (type === 'owner_notification') {
       await sendOwnerNotificationEmail(appointmentId);
+    }
+
+    if (type === 'welcome') {
+      const { businessId } = job.data;
+      await sendWelcomeEmail(businessId);
     }
 
   }, { connection });

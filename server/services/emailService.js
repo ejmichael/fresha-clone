@@ -1,8 +1,9 @@
 import { Resend } from 'resend';
 import dotenv from 'dotenv';
+import Business from '../models/Business.js';
 import Appointment from '../models/Appointment.js';
 import { generateICS, generateGoogleCalendarLink } from './calendarService.js';
-import { confirmationTemplate, reminderTemplate, cancellationTemplate, ownerNotificationTemplate, trialExpirationTemplate } from './emailTemplates.js';
+import { confirmationTemplate, reminderTemplate, cancellationTemplate, ownerNotificationTemplate, trialExpirationTemplate, welcomeEmailTemplate } from './emailTemplates.js';
 
 dotenv.config();
 
@@ -166,5 +167,34 @@ export const sendTrialExpirationEmail = async (business) => {
   } catch (error) {
     console.error('sendTrialExpirationEmail error:', error);
     // Don't throw so failure on one cron doesn't crash batch
+  }
+};
+
+export const sendWelcomeEmail = async (businessId) => {
+  try {
+    const business = await Business.findById(businessId);
+    if (!business) {
+      console.warn(`[emailService] Welcome email skipped — business ${businessId} not found`);
+      return;
+    }
+
+    const html = welcomeEmailTemplate(business);
+
+    if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 're_mock_key') {
+      console.log(`[Mock Email] Welcome email sent to ${business.email}`);
+      return;
+    }
+
+    await resend.emails.send({
+      from: EMAIL_FROM,
+      to: [business.email],
+      reply_to: EMAIL_FROM,
+      subject: `Welcome to Lazie, ${business.name}!`,
+      html
+    });
+    console.log(`[Onboarding] Welcome email sent to ${business.email}`);
+  } catch (error) {
+    console.error('sendWelcomeEmail error:', error);
+    throw error;
   }
 };

@@ -301,4 +301,61 @@ export const trialExpirationTemplate = (business, daysLeft) => `
   </div>
 </body>
 </html>
+export const welcomeEmailTemplate = (business) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: #f9fafb; }
+    .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 20px; }
+    .header { background-color: #111827; color: white; padding: 40px 30px; text-align: center; }
+    .content { padding: 32px; }
+    .cta { display: inline-block; padding: 14px 28px; background-color: #111827; color: white !important; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin: 20px 0; }
+    .footer { padding: 20px; text-align: center; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; }
+    .feature-list { list-style: none; padding: 0; margin: 20px 0; }
+    .feature-item { display: flex; align-items: start; margin-bottom: 12px; }
+    .feature-icon { margin-right: 12px; color: #10b981; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 style="margin:0; font-size: 28px; font-family: Pacifico, cursive;">Welcome to Lazie!</h1>
+      <p style="margin-top: 10px; font-size: 18px; opacity: 0.9;">We're so excited to help you grow your business.</p>
+    </div>
+    <div class="content">
+      <p>Hi <strong>${business.name}</strong>,</p>
+      <p>Thank you for choosing Lazie! You've just taken a big step toward simpler operations and happier clients.</p>
+      
+      <h3 style="margin-top: 30px; color: #111827;">What's next?</h3>
+      <ul class="feature-list">
+        <li class="feature-item">
+          <span class="feature-icon">✓</span>
+          <span><strong>Complete your setup:</strong> Add your staff and services so clients can start booking.</span>
+        </li>
+        <li class="feature-item">
+          <span class="feature-icon">✓</span>
+          <span><strong>Set your hours:</strong> Let clients know when you're available.</span>
+        </li>
+        <li class="feature-item">
+          <span class="feature-icon">✓</span>
+          <span><strong>Share your link:</strong> Your public booking link is: <a href="${process.env.CLIENT_URL}/book/${business.slug}">${process.env.CLIENT_URL}/book/${business.slug}</a></span>
+        </li>
+      </ul>
+
+      <p>If you haven't already, please provide your card details to fully activate your 30-day free trial. You won't be charged today.</p>
+
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${process.env.CLIENT_URL}/dashboard" class="cta">Go to Your Dashboard →</a>
+      </div>
+
+      <p style="color: #6b7280; font-size: 14px;">Need help? Just reply to this email. We're here to support you every step of the way.</p>
+    </div>
+    <div class="footer">
+      Powered by Lazie &middot; Simplify your business.
+    </div>
+  </div>
+</body>
+</html>
 `;

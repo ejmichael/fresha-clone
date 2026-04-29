@@ -35,6 +35,7 @@ api.interceptors.response.use(
 export const getBusinessInfo = (slug) => api.get(`/business/${slug}`);
 export const getAvailability = (params) => api.get('/availability', { params });
 export const createBooking = (data) => api.post('/bookings', data);
+export const getPublicBooking = (id) => api.get(`/bookings/${id}`);
 export const cancelBooking = (id) => api.patch(`/bookings/${id}/cancel`);
 
 // Auth

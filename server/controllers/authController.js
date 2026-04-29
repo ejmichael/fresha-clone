@@ -1,6 +1,7 @@
 import Business from '../models/Business.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import emailQueue from '../queues/emailQueue.js';
 
 const generateToken = (id, email) => {
   return jwt.sign({ id, email }, process.env.JWT_SECRET || 'fallback_secret', {
@@ -42,6 +43,12 @@ export const register = async (req, res) => {
       const token = generateToken(business._id, business.email);
       const businessData = business.toObject();
       delete businessData.password;
+
+      // Queue Welcome Email
+      await emailQueue.add('welcome', {
+        type: 'welcome',
+        businessId: business._id.toString(),
+      });
 
       res.status(201).json({
         token,

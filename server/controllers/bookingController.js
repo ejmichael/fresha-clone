@@ -8,6 +8,37 @@ import connection from '../config/redis.js';
 import { Queue } from 'bullmq';
 import { addMinutes, differenceInHours } from 'date-fns';
 
+export const getBooking = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const appointment = await Appointment.findById(id).populate('business service staff');
+    if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
+
+    // Return only necessary public info
+    res.json({
+      id: appointment._id,
+      status: appointment.status,
+      startTime: appointment.startTime,
+      business: {
+        name: appointment.business.name,
+        slug: appointment.business.slug,
+        address: appointment.business.address
+      },
+      service: {
+        name: appointment.service.name,
+        duration: appointment.service.duration,
+        price: appointment.service.price
+      },
+      staff: {
+        name: appointment.staff.name
+      }
+    });
+  } catch (error) {
+    console.error('Get Booking Error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 export const createBooking = async (req, res) => {
   try {
     const { businessId, staffId, serviceId, date, time, clientName, clientEmail, clientPhone } = req.body;
