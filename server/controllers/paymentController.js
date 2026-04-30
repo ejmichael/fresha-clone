@@ -30,8 +30,10 @@ export const createSubscriptionCheckout = async (req, res) => {
 
     // Calculate billing date: 30 days starting from today if they are in pending_setup
     let billingDate = new Date();
+    let initialAmount = '149.00';
     if (business.subscriptionStatus === 'pending_setup') {
       billingDate.setDate(billingDate.getDate() + 30);
+      initialAmount = '0.00';
     }
     const billingDateString = billingDate.toISOString().split('T')[0];
 
@@ -46,7 +48,7 @@ export const createSubscriptionCheckout = async (req, res) => {
       name_last: business.name.split(' ').slice(1).join(' ') || 'Owner',
       email_address: business.email,
       m_payment_id: businessId,        // Track custom user ID
-      amount: '149.00',                // Monthly cost for Growth plan
+      amount: initialAmount,            // Monthly cost for Growth plan (0.00 for trial)
       item_name: 'Lazie Growth Subscription',
       subscription_type: '1',          // 1 = Subscription
       billing_date: billingDateString, // The date for the first payment (today or in 30 days)
