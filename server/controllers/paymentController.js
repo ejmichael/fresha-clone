@@ -6,11 +6,13 @@ dotenv.config();
 // Helper to generate PayFast signature
 const generateSignature = (data, passPhrase = null) => {
   let pfOutput = '';
-  for (let key in data) {
-    if (data.hasOwnProperty(key)) {
-      if (data[key] !== '') {
-        pfOutput += `${key}=${encodeURIComponent(data[key].trim()).replace(/%20/g, '+')}&`;
-      }
+  
+  // PayFast requires variables to be in alphabetical order for signature generation
+  const sortedKeys = Object.keys(data).sort();
+  
+  for (let key of sortedKeys) {
+    if (data[key] !== '') {
+      pfOutput += `${key}=${encodeURIComponent(data[key].trim()).replace(/%20/g, '+')}&`;
     }
   }
 
@@ -71,6 +73,12 @@ export const payfastITNWebhook = async (req, res) => {
   try {
     // PayFast ITN payload
     const pfData = req.body;
+    console.log('[ITN Webhook Received]', pfData);
+
+    if (!pfData || Object.keys(pfData).length === 0) {
+      console.error('[ITN] Empty payload received. Check express.urlencoded middleware.');
+      return res.status(400).send('Empty payload');
+    }
 
     // 1. Check IP address (In production, verify it's from PayFast)
     // 2. Validate Signature

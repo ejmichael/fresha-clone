@@ -32,6 +32,7 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/business', businessRoutes);
 app.use('/api/availability', availabilityRoutes);
