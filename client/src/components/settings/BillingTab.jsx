@@ -97,7 +97,7 @@ const BillingTab = ({ profile, showToast }) => {
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Subscribe for R149/mo'}
             </button>
           ) : (
-            <div className="flex items-center gap-4 w-full">
+            <div className="flex flex-col sm:flex-row items-center gap-4 w-full">
               <button
                 disabled
                 className="px-6 py-3 bg-gray-200 text-gray-500 rounded-lg font-bold text-sm cursor-not-allowed"
@@ -105,10 +105,24 @@ const BillingTab = ({ profile, showToast }) => {
                 Plan Active
               </button>
               <button 
-                 onClick={() => showToast('Cancellation coming soon. Contact support.', 'info')}
-                 className="text-sm font-semibold text-red-600 hover:text-red-500 transition-colors"
+                 onClick={async () => {
+                   if (window.confirm('Are you sure you want to cancel your subscription? Your trial or active status will be terminated.')) {
+                     setLoading(true);
+                     try {
+                       await api.put('/payments/cancel');
+                       showToast('Subscription canceled successfully', 'success');
+                       setTimeout(() => window.location.reload(), 1500);
+                     } catch (error) {
+                       console.error(error);
+                       showToast('Failed to cancel subscription', 'error');
+                       setLoading(false);
+                     }
+                   }
+                 }}
+                 disabled={loading}
+                 className="text-sm font-semibold text-red-600 hover:text-red-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                >
-                 Cancel Subscription
+                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Cancel Subscription'}
                </button>
             </div>
           )}

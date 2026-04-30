@@ -158,3 +158,70 @@ export const payfastITNWebhook = async (req, res) => {
     res.status(500).send('Webhook parsing error');
   }
 };
+
+export const cancelSubscription = async (req, res) => {
+  try {
+    const businessId = req.business?.id;
+    if (!businessId) return res.status(401).json({ message: 'User session missing' });
+
+    const business = await Business.findById(businessId);
+    if (!business) return res.status(404).json({ message: 'Business not found' });
+
+    if (!business.payfastToken) {
+      business.subscriptionStatus = 'canceled';
+      await business.save();
+      return res.json({ message: 'Subscription canceled', business });
+    }
+
+    const token = business.payfastToken;
+    const merchantId = process.env.PAYFAST_MERCHANT_ID;
+    const version = 'v1';
+    
+    // Convert to ISO string and remove milliseconds
+    const timestamp = new Date().toISOString().split('.')[0]; 
+    const passPhrase = process.env.PAYFAST_PASSPHRASE || '';
+
+    // Create signature for PayFast API (different from ITN signature)
+    let signatureString = `merchant-id=${merchantId}&version=${version}&timestamp=${timestamp}`;
+    if (passPhrase) {
+      signatureString += `&passphrase=${encodeURIComponent(passPhrase.trim()).replace(/%20/g, '+')}`;
+    }
+
+    const signature = crypto.createHash('md5').update(signatureString).digest('hex');
+
+    const apiUrl = (process.env.PAYFAST_URL || '').includes('sandbox') 
+      ? `https://api.sandbox.payfast.co.za/subscriptions/${token}/cancel`
+      : `https://api.payfast.co.za/subscriptions/${token}/cancel`;
+
+    const response = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        'merchant-id': merchantId,
+        'version': version,
+        'timestamp': timestamp,
+        'signature': signature,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // If fetch failed completely, it throws. Otherwise we process the json
+    let data = {};
+    if (response.ok) {
+        try { data = await response.json(); } catch(e) {}
+    } else {
+        const text = await response.text();
+        console.warn('PayFast Cancel API returned non-ok:', text);
+    }
+
+    // Regardless of API success (the token might already be voided on their side)
+    // We update our DB so the user isn't stuck natively.
+    business.subscriptionStatus = 'canceled';
+    business.payfastToken = null;
+    await business.save();
+
+    res.json({ message: 'Subscription canceled successfully', business });
+  } catch (error) {
+    console.error('Subscription cancellation error:', error);
+    res.status(500).json({ message: 'Failed to cancel subscription' });
+  }
+};
