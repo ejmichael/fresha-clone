@@ -33,7 +33,7 @@ export const createSubscriptionCheckout = async (req, res) => {
     let initialAmount = '149.00';
     if (business.subscriptionStatus === 'pending_setup') {
       billingDate.setDate(billingDate.getDate() + 30);
-      initialAmount = '0.00';
+      initialAmount = '10.00';
     }
     const billingDateString = billingDate.toISOString().split('T')[0];
 
