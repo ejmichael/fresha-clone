@@ -7,12 +7,19 @@ dotenv.config();
 const generateSignature = (data, passPhrase = null) => {
   let pfOutput = '';
   
+  // Create a copy and remove signature if present (for ITN verification)
+  const signData = { ...data };
+  delete signData.signature;
+
   // PayFast requires variables to be in alphabetical order for signature generation
-  const sortedKeys = Object.keys(data).sort();
+  const sortedKeys = Object.keys(signData).sort();
   
   for (let key of sortedKeys) {
-    if (data[key] !== '') {
-      pfOutput += `${key}=${encodeURIComponent(data[key].trim()).replace(/%20/g, '+')}&`;
+    const value = signData[key];
+    if (value !== undefined && value !== null && value !== '') {
+      // Ensure value is a string before trimming
+      const stringValue = String(value).trim();
+      pfOutput += `${key}=${encodeURIComponent(stringValue).replace(/%20/g, '+')}&`;
     }
   }
 
@@ -26,9 +33,23 @@ const generateSignature = (data, passPhrase = null) => {
 
 export const createSubscriptionCheckout = async (req, res) => {
   try {
-    const businessId = req.business.id;
+    const businessId = req.business?.id;
+    if (!businessId) {
+      console.error('[Checkout] No business ID in request');
+      return res.status(401).json({ message: 'User reference missing' });
+    }
+
     const business = await Business.findById(businessId);
-    if (!business) return res.status(404).json({ message: 'Business not found' });
+    if (!business) {
+      console.error('[Checkout] Business not found:', businessId);
+      return res.status(404).json({ message: 'Business not found' });
+    }
+
+    // Verify critical env vars
+    if (!process.env.PAYFAST_MERCHANT_ID || !process.env.PAYFAST_MERCHANT_KEY) {
+      console.error('[Checkout] PayFast configuration missing in .env');
+      return res.status(500).json({ message: 'Payment gateway misconfigured' });
+    }
 
     // Calculate billing date: 30 days starting from today if they are in pending_setup
     let billingDate = new Date();
@@ -49,22 +70,24 @@ export const createSubscriptionCheckout = async (req, res) => {
       name_first: business.name.split(' ')[0] || 'Business',
       name_last: business.name.split(' ').slice(1).join(' ') || 'Owner',
       email_address: business.email,
-      m_payment_id: businessId,        // Track custom user ID
-      amount: initialAmount,            // Monthly cost for Growth plan (0.00 for trial)
+      m_payment_id: businessId.toString(),        // Ensure string
+      amount: initialAmount,
       item_name: 'Lazie Growth Subscription',
-      subscription_type: '1',          // 1 = Subscription
-      billing_date: billingDateString, // The date for the first payment (today or in 30 days)
+      subscription_type: '1',
+      billing_date: billingDateString,
       recurring_amount: '149.00',
-      frequency: '3',                  // 3 = Monthly
-      cycles: '0',                     // 0 = Indefinite
+      frequency: '3',
+      cycles: '0',
     };
+
+    console.log('[Checkout] Generating payment for:', business.name, 'Amount:', initialAmount);
 
     // Calculate Signature
     paymentData.signature = generateSignature(paymentData, process.env.PAYFAST_PASSPHRASE || '');
 
     res.json({ paymentData, payfastUrl: process.env.PAYFAST_URL });
   } catch (error) {
-    console.error('Checkout creation error:', error);
+    console.error('[Checkout Error]', error);
     res.status(500).json({ message: 'Error creating checkout session' });
   }
 };
