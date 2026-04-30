@@ -32,6 +32,7 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // CRITICAL: Required for PayFast ITNs which come as x-www-form-urlencoded
 
 app.use('/api/business', businessRoutes);
 app.use('/api/availability', availabilityRoutes);

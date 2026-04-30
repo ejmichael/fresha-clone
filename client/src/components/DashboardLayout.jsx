@@ -128,9 +128,9 @@ const DashboardLayout = () => {
 
       {/* Main content */}
       <main className="flex-1 overflow-y-auto pt-16 lg:pt-0 flex flex-col">
-        {/* Trial banners */}
+        {/* Trial banners elevated above the blur */}
         {setupRequired && (
-          <div className="bg-lazie-primary text-gray-950 px-4 py-3 flex items-center justify-between gap-4 flex-shrink-0 shadow-md">
+          <div className="bg-lazie-primary text-gray-950 px-4 py-3 flex items-center justify-between gap-4 flex-shrink-0 shadow-md relative z-50">
             <div className="flex items-center gap-2">
               <CreditCard className="w-5 h-5 shrink-0" />
               <span className="text-sm font-bold">One last step: Provide card details to start your 30-day free trial. You won't be charged today.</span>
@@ -145,7 +145,7 @@ const DashboardLayout = () => {
           </div>
         )}
         {trialExpired && (
-          <div className="bg-red-600 text-white px-4 py-3 flex items-center justify-between gap-4 flex-shrink-0">
+          <div className="bg-red-600 text-white px-4 py-3 flex items-center justify-between gap-4 flex-shrink-0 relative z-50 shadow-md">
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 shrink-0" />
               <span className="text-sm font-medium">Your free trial has expired. Subscribe to re-activate your account.</span>
@@ -156,7 +156,7 @@ const DashboardLayout = () => {
           </div>
         )}
         {trialWarningSoon && (
-          <div className="bg-amber-50 border-b border-amber-200 px-4 py-2.5 flex items-center justify-between gap-4 flex-shrink-0">
+          <div className="bg-amber-50 border-b border-amber-200 px-4 py-2.5 flex items-center justify-between gap-4 flex-shrink-0 relative z-50">
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
               <span className="text-sm text-amber-800">Your free trial expires in <strong>{daysLeft} day{daysLeft !== 1 ? 's' : ''}</strong>.</span>
@@ -166,9 +166,13 @@ const DashboardLayout = () => {
             </Link>
           </div>
         )}
-        {/* Blur overlay when trial is hard-expired or setup is required */}
+
+        {/* Global Blur overlay over everything else */}
+        {(trialExpired || setupRequired) && (
+          <div className="fixed inset-0 bg-white/60 backdrop-blur-[8px] z-[45]" />
+        )}
+
         <div className={`flex-1 relative ${trialExpired || setupRequired ? 'pointer-events-none' : ''}`}>
-          {(trialExpired || setupRequired) && <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10" />}
           <Outlet />
         </div>
       </main>
