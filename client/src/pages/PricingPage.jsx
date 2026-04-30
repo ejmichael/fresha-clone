@@ -96,9 +96,21 @@ const PricingPage = () => {
                 {tier.name && <h3 className="text-2xl font-bold text-gray-900 mb-2">{tier.name}</h3>}
                 <p className="text-gray-500 mb-6 min-h-[48px]">{tier.description}</p>
 
-                <div className="mb-8 flex items-baseline gap-x-2">
-                  <span className="text-5xl font-extrabold tracking-tight text-gray-900">{tier.price}</span>
-                  <span className="text-sm font-semibold leading-6 text-gray-500">/month</span>
+                <div className="mb-3">
+                  <span className="inline-block rounded-full bg-[#f0ff00]/60 px-3 py-1 text-xs font-extrabold text-gray-900 uppercase tracking-wider transform -rotate-2">
+                    Special Offer
+                  </span>
+                </div>
+
+                <div className="mb-8 flex flex-col gap-1">
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <span className="text-2xl font-bold line-through decoration-2 decoration-red-500">R149</span>
+                    <span className="text-sm font-medium">Regular Price</span>
+                  </div>
+                  <div className="flex items-baseline gap-x-2">
+                    <span className="text-6xl font-extrabold tracking-tight text-gray-900">R14.90</span>
+                    <span className="text-sm font-semibold leading-6 text-gray-500">for your first month</span>
+                  </div>
                 </div>
 
                 <button
