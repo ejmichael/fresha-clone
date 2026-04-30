@@ -27,6 +27,17 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('saas_token', newToken);
   };
 
+  const refreshProfile = async () => {
+    if (token) {
+      try {
+        const { data } = await getMe(token);
+        setBusiness(data.business);
+      } catch (err) {
+        console.error('Session refresh failed:', err);
+      }
+    }
+  };
+
   useEffect(() => {
     const hydrateSession = async () => {
       if (token) {
@@ -44,7 +55,7 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   return (
-    <AuthContext.Provider value={{ business, token, loading, isAuthenticated: !!token, login, logout, setAuthData }}>
+    <AuthContext.Provider value={{ business, token, loading, isAuthenticated: !!token, login, logout, setAuthData, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );

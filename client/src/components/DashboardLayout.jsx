@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
-import { Outlet, NavLink, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, NavLink, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Calendar, FileText, Users, Settings, LogOut, Menu, X, AlertTriangle, CreditCard, Store, UserCog, Loader2 } from 'lucide-react';
 import api from '../api/api';
 
 const DashboardLayout = () => {
-  const { business, logout } = useAuth();
+  const { business, logout, refreshProfile } = useAuth();
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activating, setActivating] = useState(false);
+
+  // Auto-refresh when coming back from PayFast
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('payment') === 'success') {
+      refreshProfile();
+    }
+  }, [location.search]);
 
   if (!business) return null;
 
