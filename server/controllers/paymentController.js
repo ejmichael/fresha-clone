@@ -177,15 +177,18 @@ export const cancelSubscription = async (req, res) => {
     const merchantId = process.env.PAYFAST_MERCHANT_ID;
     const version = 'v1';
     
-    // Convert to ISO string and remove milliseconds
+    // PayFast API requires timestamp in format `Y-m-dTH:i:s` (ISO8601 without milliseconds)
     const timestamp = new Date().toISOString().split('.')[0]; 
     const passPhrase = process.env.PAYFAST_PASSPHRASE || '';
 
-    // Create signature for PayFast API (different from ITN signature)
-    let signatureString = `merchant-id=${merchantId}&version=${version}&timestamp=${timestamp}`;
+    // Create signature for PayFast API (MUST BE STRICT ALPHABETICAL ORDER)
+    // Keys: merchant-id, passphrase (if exists), timestamp, version
+    let signatureString = `merchant-id=${merchantId}`;
     if (passPhrase) {
       signatureString += `&passphrase=${encodeURIComponent(passPhrase.trim()).replace(/%20/g, '+')}`;
     }
+    signatureString += `&timestamp=${timestamp}`;
+    signatureString += `&version=${version}`;
 
     const signature = crypto.createHash('md5').update(signatureString).digest('hex');
 
@@ -204,22 +207,28 @@ export const cancelSubscription = async (req, res) => {
       }
     });
 
-    // If fetch failed completely, it throws. Otherwise we process the json
-    let data = {};
     if (response.ok) {
-        try { data = await response.json(); } catch(e) {}
+      const data = await response.json();
+      console.log('PayFast Cancel API Success:', data);
+      
+      business.subscriptionStatus = 'canceled';
+      business.payfastToken = null;
+      await business.save();
+      return res.json({ message: 'Subscription canceled successfully', business });
     } else {
-        const text = await response.text();
-        console.warn('PayFast Cancel API returned non-ok:', text);
+      const text = await response.text();
+      console.warn('PayFast Cancel API returned non-ok:', text);
+      
+      // If PayFast says it's already canceled, missing, or invalid, we should still clean up local DB
+      if (text.toLowerCase().includes('invalid') || text.toLowerCase().includes('not found') || response.status === 404) {
+         business.subscriptionStatus = 'canceled';
+         business.payfastToken = null;
+         await business.save();
+         return res.json({ message: 'Subscription canceled successfully', business });
+      }
+
+      return res.status(400).json({ message: `PayFast API error: ${text}` });
     }
-
-    // Regardless of API success (the token might already be voided on their side)
-    // We update our DB so the user isn't stuck natively.
-    business.subscriptionStatus = 'canceled';
-    business.payfastToken = null;
-    await business.save();
-
-    res.json({ message: 'Subscription canceled successfully', business });
   } catch (error) {
     console.error('Subscription cancellation error:', error);
     res.status(500).json({ message: 'Failed to cancel subscription' });

@@ -24,12 +24,21 @@ const DashboardLayout = () => {
   const isPendingSetup = business.subscriptionStatus === 'pending_setup';
   const isTrialing = business.subscriptionStatus === 'trialing';
   const isActive = business.subscriptionStatus === 'active';
+  const isCanceled = business.subscriptionStatus === 'canceled';
+  
   const expiresAt = business.subscriptionExpiresAt ? new Date(business.subscriptionExpiresAt) : null;
   const now = new Date();
-  const daysLeft = expiresAt ? Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24)) : null;
-  const trialExpired = isTrialing && daysLeft !== null && daysLeft <= 0;
-  const trialWarningSoon = isTrialing && daysLeft !== null && daysLeft > 0 && daysLeft <= 7;
+  const timeDiff = expiresAt ? expiresAt.getTime() - now.getTime() : null;
+  const daysLeft = expiresAt ? Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) : null;
+  
+  const isExpired = expiresAt !== null && timeDiff <= 0;
   const setupRequired = isPendingSetup;
+  
+  // The app gets locked/blurred only if setup is entirely lacking or their paid time has totally elapsed
+  const shouldLock = setupRequired || isExpired;
+  
+  const trialWarningSoon = isTrialing && !isExpired && daysLeft !== null && daysLeft <= 7;
+  const canceledGraceWarning = isCanceled && !isExpired && daysLeft !== null;
 
   const handleActivateTrial = async () => {
     setActivating(true);
@@ -144,17 +153,19 @@ const DashboardLayout = () => {
             </button>
           </div>
         )}
-        {trialExpired && (
+        
+        {isExpired && (
           <div className="bg-red-600 text-white px-4 py-3 flex items-center justify-between gap-4 flex-shrink-0 relative z-50 shadow-md">
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 shrink-0" />
-              <span className="text-sm font-medium">Your free trial has expired. Subscribe to re-activate your account.</span>
+              <span className="text-sm font-medium">Your subscription has expired. Subscribe to re-activate your account and continue managing your business.</span>
             </div>
             <Link to="/dashboard/settings" className="flex items-center gap-1.5 bg-white text-red-600 font-bold text-xs px-3 py-1.5 rounded-full hover:bg-red-50 transition-colors shrink-0">
               <CreditCard className="w-3.5 h-3.5" /> Subscribe Now
             </Link>
           </div>
         )}
+        
         {trialWarningSoon && (
           <div className="bg-amber-50 border-b border-amber-200 px-4 py-2.5 flex items-center justify-between gap-4 flex-shrink-0 relative z-50">
             <div className="flex items-center gap-2">
@@ -167,12 +178,24 @@ const DashboardLayout = () => {
           </div>
         )}
 
+        {canceledGraceWarning && (
+          <div className="bg-blue-50 border-b border-blue-200 px-4 py-2.5 flex items-center justify-between gap-4 flex-shrink-0 relative z-50">
+            <div className="flex items-center gap-2">
+              <Info className="w-4 h-4 text-blue-600 shrink-0" />
+              <span className="text-sm text-blue-800">Your subscription is canceled, but you retain full access for <strong>{daysLeft} day{daysLeft !== 1 ? 's' : ''}</strong> until it fully expires.</span>
+            </div>
+            <Link to="/dashboard/settings" className="text-xs font-semibold text-blue-700 hover:text-blue-900 shrink-0 underline">
+              Re-subscribe
+            </Link>
+          </div>
+        )}
+
         {/* Global Blur overlay over everything else */}
-        {(trialExpired || setupRequired) && (
+        {shouldLock && (
           <div className="fixed inset-0 bg-white/60 backdrop-blur-[8px] z-[45]" />
         )}
 
-        <div className={`flex-1 relative ${trialExpired || setupRequired ? 'pointer-events-none' : ''}`}>
+        <div className={`flex-1 relative ${shouldLock ? 'pointer-events-none' : ''}`}>
           <Outlet />
         </div>
       </main>

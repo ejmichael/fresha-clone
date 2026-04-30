@@ -44,6 +44,8 @@ const BillingTab = ({ profile, showToast }) => {
         return <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded">Active</span>;
       case 'trialing':
         return <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-1 rounded">On Trial</span>;
+      case 'canceled':
+        return <span className="bg-gray-200 text-gray-800 text-xs font-medium px-2.5 py-1 rounded">Canceled</span>;
       case 'past_due':
         return <span className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-1 rounded">Past Due</span>;
       default:
@@ -78,6 +80,16 @@ const BillingTab = ({ profile, showToast }) => {
           </div>
         )}
 
+        {profile?.subscriptionStatus === 'canceled' && (
+          <div className="mt-4 p-4 bg-gray-100 border border-gray-300 rounded-lg flex items-start gap-3">
+            <Info className="w-5 h-5 text-gray-600 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold text-gray-800">Your subscription is canceled.</p>
+              <p className="text-sm text-gray-600 mt-1">You will retain full access to all features until your current period expires in {getDaysLeft()} days.</p>
+            </div>
+          </div>
+        )}
+
         {profile?.subscriptionStatus === 'active' && (
           <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
             <p className="font-semibold text-green-900">Your subscription is actively renewing.</p>
@@ -88,13 +100,13 @@ const BillingTab = ({ profile, showToast }) => {
         )}
 
         <div className="mt-8 flex flex-col sm:flex-row gap-4">
-          {profile?.subscriptionStatus !== 'active' ? (
+          {(profile?.subscriptionStatus !== 'active' && profile?.subscriptionStatus !== 'trialing') ? (
             <button
               onClick={handleSubscribe}
               disabled={loading}
               className="px-6 py-3 bg-gray-900 text-white rounded-lg font-bold text-sm hover:bg-gray-800 transition-all flex justify-center items-center gap-2"
             >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Subscribe for R149/mo'}
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (profile?.subscriptionStatus === 'canceled' ? 'Re-subscribe for R149/mo' : 'Subscribe for R149/mo')}
             </button>
           ) : (
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full">
@@ -106,7 +118,7 @@ const BillingTab = ({ profile, showToast }) => {
               </button>
               <button 
                  onClick={async () => {
-                   if (window.confirm('Are you sure you want to cancel your subscription? Your trial or active status will be terminated.')) {
+                   if (window.confirm('Are you sure you want to cancel your subscription? You will retain access until the end of your billing cycle.')) {
                      setLoading(true);
                      try {
                        await api.put('/payments/cancel');
