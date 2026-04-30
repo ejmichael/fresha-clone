@@ -6,25 +6,16 @@ dotenv.config();
 // Helper to generate PayFast signature
 const generateSignature = (data, passPhrase = null) => {
   let pfOutput = '';
-  
-  // Create a copy and remove signature if present (for ITN verification)
-  const signData = { ...data };
-  delete signData.signature;
-
-  // PayFast requires variables to be in alphabetical order for signature generation
-  const sortedKeys = Object.keys(signData).sort();
-  
-  for (let key of sortedKeys) {
-    const value = signData[key];
-    if (value !== undefined && value !== null && value !== '') {
-      // Ensure value is a string before trimming
-      const stringValue = String(value).trim();
-      pfOutput += `${key}=${encodeURIComponent(stringValue).replace(/%20/g, '+')}&`;
+  for (let key in data) {
+    if (data.hasOwnProperty(key)) {
+      if (data[key] !== '') {
+        pfOutput += `${key}=${encodeURIComponent(data[key].trim()).replace(/%20/g, '+')}&`;
+      }
     }
   }
 
   let getString = pfOutput.slice(0, -1);
-  if (passPhrase !== null && passPhrase !== '') {
+  if (passPhrase !== null) {
     getString += `&passphrase=${encodeURIComponent(passPhrase.trim()).replace(/%20/g, '+')}`;
   }
 
@@ -33,23 +24,9 @@ const generateSignature = (data, passPhrase = null) => {
 
 export const createSubscriptionCheckout = async (req, res) => {
   try {
-    const businessId = req.business?.id;
-    if (!businessId) {
-      console.error('[Checkout] No business ID in request');
-      return res.status(401).json({ message: 'User reference missing' });
-    }
-
+    const businessId = req.business.id;
     const business = await Business.findById(businessId);
-    if (!business) {
-      console.error('[Checkout] Business not found:', businessId);
-      return res.status(404).json({ message: 'Business not found' });
-    }
-
-    // Verify critical env vars
-    if (!process.env.PAYFAST_MERCHANT_ID || !process.env.PAYFAST_MERCHANT_KEY) {
-      console.error('[Checkout] PayFast configuration missing in .env');
-      return res.status(500).json({ message: 'Payment gateway misconfigured' });
-    }
+    if (!business) return res.status(404).json({ message: 'Business not found' });
 
     // Calculate billing date: 30 days starting from today if they are in pending_setup
     let billingDate = new Date();
@@ -70,24 +47,22 @@ export const createSubscriptionCheckout = async (req, res) => {
       name_first: business.name.split(' ')[0] || 'Business',
       name_last: business.name.split(' ').slice(1).join(' ') || 'Owner',
       email_address: business.email,
-      m_payment_id: businessId.toString(),        // Ensure string
-      amount: initialAmount,
+      m_payment_id: businessId,        // Track custom user ID
+      amount: initialAmount,            // Monthly cost for Growth plan (0.00 for trial)
       item_name: 'Lazie Growth Subscription',
-      subscription_type: '1',
-      billing_date: billingDateString,
+      subscription_type: '1',          // 1 = Subscription
+      billing_date: billingDateString, // The date for the first payment (today or in 30 days)
       recurring_amount: '149.00',
-      frequency: '3',
-      cycles: '0',
+      frequency: '3',                  // 3 = Monthly
+      cycles: '0',                     // 0 = Indefinite
     };
-
-    console.log('[Checkout] Generating payment for:', business.name, 'Amount:', initialAmount);
 
     // Calculate Signature
     paymentData.signature = generateSignature(paymentData, process.env.PAYFAST_PASSPHRASE || '');
 
     res.json({ paymentData, payfastUrl: process.env.PAYFAST_URL });
   } catch (error) {
-    console.error('[Checkout Error]', error);
+    console.error('Checkout creation error:', error);
     res.status(500).json({ message: 'Error creating checkout session' });
   }
 };
@@ -96,12 +71,6 @@ export const payfastITNWebhook = async (req, res) => {
   try {
     // PayFast ITN payload
     const pfData = req.body;
-    console.log('[ITN Webhook Received]', pfData);
-
-    if (!pfData || Object.keys(pfData).length === 0) {
-      console.error('[ITN] Empty payload received. Check express.urlencoded middleware.');
-      return res.status(400).send('Empty payload');
-    }
 
     // 1. Check IP address (In production, verify it's from PayFast)
     // 2. Validate Signature
@@ -133,8 +102,6 @@ export const payfastITNWebhook = async (req, res) => {
           const expiration = new Date();
           expiration.setDate(expiration.getDate() + 31);
           business.subscriptionExpiresAt = expiration;
-          
-          console.log(`[ITN] Successfully activated PAID subscription for business ${businessId}`);
         } 
         // If it's NOT complete but we have a token and they were pending, it's a trial setup
         else if (business.subscriptionStatus === 'pending_setup' && token) {
@@ -144,8 +111,6 @@ export const payfastITNWebhook = async (req, res) => {
           const trialEnd = new Date();
           trialEnd.setDate(trialEnd.getDate() + 30);
           business.subscriptionExpiresAt = trialEnd;
-          
-          console.log(`[ITN] Successfully started GATED TRIAL for business ${businessId}`);
         }
 
         await business.save();
