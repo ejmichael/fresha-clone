@@ -46,8 +46,9 @@ const PricingPage = () => {
     {
       name: '',
       price: 'R149',
-      description: 'Everything you need to manage your business from end to end.',
+      description: 'Everything you need to manage your business from end to end. First month discounted to R14.90.',
       features: [
+        'First month only R14.90',
         'Core scheduling & booking',
         'Unlimited staff members',
         'Automated SMS & Email reminders',
@@ -55,7 +56,7 @@ const PricingPage = () => {
         'Unlimited clients',
         'Priority email support'
       ],
-      cta: 'Start Free Trial',
+      cta: 'Claim Discount',
       highlighted: true
     }
   ];
