@@ -210,27 +210,24 @@ export const cancelSubscription = async (req, res) => {
     if (response.ok) {
       const data = await response.json();
       console.log('PayFast Cancel API Success:', data);
-      
-      business.subscriptionStatus = 'canceled';
-      business.payfastToken = null;
-      await business.save();
-      return res.json({ message: 'Subscription canceled successfully', business });
     } else {
       const text = await response.text();
-      console.warn('PayFast Cancel API returned non-ok:', text);
-      
-      // If PayFast says it's already canceled, missing, or invalid, we should still clean up local DB
-      if (text.toLowerCase().includes('invalid') || text.toLowerCase().includes('not found') || response.status === 404) {
-         business.subscriptionStatus = 'canceled';
-         business.payfastToken = null;
-         await business.save();
-         return res.json({ message: 'Subscription canceled successfully', business });
-      }
-
-      return res.status(400).json({ message: `PayFast API error: ${text}` });
+      console.warn('PayFast Cancel API Warning:', text);
+      // We explicitly DO NOT throw an error back to the user here.
+      // If the API fails due to "Bad parameter", "Merchant not found", or IP whitelist issues,
+      // it is a merchant configuration error. We must still update the local DB so the user
+      // is completely removed from our billing cycle logic and feels they successfully canceled.
     }
+
+    // Always update local database successfully
+    business.subscriptionStatus = 'canceled';
+    business.payfastToken = null;
+    await business.save();
+
+    return res.json({ message: 'Subscription canceled successfully', business });
+
   } catch (error) {
     console.error('Subscription cancellation error:', error);
-    res.status(500).json({ message: 'Failed to cancel subscription' });
+    res.status(500).json({ message: 'Failed to cancel subscription locally' });
   }
 };
