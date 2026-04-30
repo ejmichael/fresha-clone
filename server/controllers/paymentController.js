@@ -35,13 +35,12 @@ export const createSubscriptionCheckout = async (req, res) => {
     const business = await Business.findById(businessId);
     if (!business) return res.status(404).json({ message: 'Business not found' });
 
-    // Calculate billing date: 30 days starting from today if they are in pending_setup
-    let billingDate = new Date();
+    // Set initial amount to 149.00 to test if bank accepts standard amount
     let initialAmount = '149.00';
-    if (business.subscriptionStatus === 'pending_setup') {
-      billingDate.setDate(billingDate.getDate() + 30);
-      initialAmount = '10.00';
-    }
+    let billingDate = new Date();
+    
+    // Set next billing date to 30 days from now
+    billingDate.setDate(billingDate.getDate() + 30);
     const billingDateString = billingDate.toISOString().split('T')[0];
 
     // The data payload for a PayFast Subscription
