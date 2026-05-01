@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Calendar, FileText, Users, Settings, LogOut, Menu, X, AlertTriangle, CreditCard, Store, UserCog, Loader2 } from 'lucide-react';
+import { Calendar, FileText, Users, Settings, LogOut, Menu, X, AlertTriangle, CreditCard, Store, UserCog, Loader2, Info } from 'lucide-react';
 import api from '../api/api';
 
 const DashboardLayout = () => {
