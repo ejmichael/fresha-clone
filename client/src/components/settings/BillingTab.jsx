@@ -43,7 +43,7 @@ const BillingTab = ({ profile, showToast }) => {
       case 'active':
         return <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded">Active</span>;
       case 'trialing':
-        return <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-1 rounded">On Trial</span>;
+        return <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-1 rounded">Promotion Active</span>;
       case 'canceled':
         return <span className="bg-gray-200 text-gray-800 text-xs font-medium px-2.5 py-1 rounded">Canceled</span>;
       case 'past_due':
@@ -74,8 +74,8 @@ const BillingTab = ({ profile, showToast }) => {
           <div className="mt-4 p-4 bg-lazie-primary/10 border border-lazie-primary rounded-lg flex items-start gap-3">
             <Info className="w-5 h-5 text-lazie-dark shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-lazie-dark">Your trial expires in {getDaysLeft()} days.</p>
-              <p className="text-sm text-gray-700 mt-1">Upgrade now to ensure your clients never experience a break in service and you keep your scheduling fully automated.</p>
+              <p className="font-semibold text-lazie-dark">Your first month promotion expires in {getDaysLeft()} days.</p>
+              <p className="text-sm text-gray-700 mt-1">Your subscription will automatically renew at regular price after this period to ensure no interruption to your business.</p>
             </div>
           </div>
         )}

@@ -260,7 +260,7 @@ const FeaturesPage = () => {
               to="/register"
               className="inline-block px-12 py-5 bg-lazie-primary text-gray-950 rounded-full font-bold text-xl hover:brightness-95 transition-all shadow-2xl shadow-lazie-primary/30"
             >
-              Start Your Free Trial
+              Claim First Month Promo
             </Link>
           </div>
         </div>

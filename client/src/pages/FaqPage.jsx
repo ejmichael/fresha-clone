@@ -9,8 +9,8 @@ const FaqPage = () => {
       answer: "Lazie is an all-in-one booking and business management platform designed for service-based businesses like salons, spas, barbershops, and consultants. We help you manage appointments, process payments, and connect with your clients."
     },
     {
-      question: "Do I need a credit card to sign up for the free trial?",
-      answer: "No, you do not need a credit card to start your 14-day free trial. You can explore all the features risk-free and decide to upgrade when you are ready."
+      question: "Do I need a credit card?",
+      answer: "No, you do not need a credit card immediately to access the dashboard. However, you will need to add one to claim your first month promotion for R14.90 and continue operating your business."
     },
     {
       question: "Can I upgrade or downgrade my plan at any time?",

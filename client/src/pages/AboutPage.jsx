@@ -97,7 +97,7 @@ const AboutPage = () => {
             to="/register" 
             className="inline-block px-10 py-4 bg-lazie-primary text-gray-950 rounded-full font-bold text-lg hover:brightness-95 transition-all shadow-xl shadow-lazie-primary/20"
           >
-            Start Your Free Trial
+            Claim Discount
           </Link>
         </section>
       </main>
