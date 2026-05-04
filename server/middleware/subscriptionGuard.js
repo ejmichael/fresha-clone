@@ -2,9 +2,7 @@ import Business from '../models/Business.js';
 
 /**
  * Subscription Guard Middleware
- * Blocks dashboard API access if the business's trial has expired
- * and they haven't subscribed yet.
- * Always allows access if subscriptionStatus === 'active'.
+ * Blocks dashboard API access based on subscription status and expiry.
  */
 export const subscriptionGuard = async (req, res, next) => {
   try {
@@ -14,27 +12,45 @@ export const subscriptionGuard = async (req, res, next) => {
       return res.status(404).json({ message: 'Business not found' });
     }
 
-    // Handle new users who need to provide card details
-    if (business.subscriptionStatus === 'pending_setup') {
+    const { subscriptionStatus, subscriptionExpiresAt } = business;
+    const now = new Date();
+
+    // Block users who have never set up payment
+    if (subscriptionStatus === 'pending_setup') {
       return res.status(403).json({
-        message: 'Please complete your account setup by providing card details for your free trial.',
+        message: 'Please complete your account setup.',
         setupRequired: true
       });
     }
 
-    // Check if trial has expired
-    if (business.subscriptionStatus === 'trialing') {
-      const now = new Date();
-      if (business.subscriptionExpiresAt && business.subscriptionExpiresAt < now) {
+    // Active subscribers — always allow
+    if (subscriptionStatus === 'active') {
+      return next();
+    }
+
+    // Trialing — allow if trial hasn't expired yet
+    if (subscriptionStatus === 'trialing') {
+      if (subscriptionExpiresAt && subscriptionExpiresAt < now) {
         return res.status(403).json({
-          message: 'Your free trial has expired. Please subscribe to continue.',
+          message: 'Your first month promotion has expired. Please check billing.',
           trialExpired: true
         });
       }
-      return next(); // Still within trial
+      return next();
     }
 
-    // Any other status (past_due, canceled) — block access
+    // Canceled — allow during grace period (until subscriptionExpiresAt elapses)
+    if (subscriptionStatus === 'canceled') {
+      if (subscriptionExpiresAt && subscriptionExpiresAt > now) {
+        return next(); // Still has time left, grant access
+      }
+      return res.status(403).json({
+        message: 'Your subscription has fully expired. Please re-subscribe to continue.',
+        trialExpired: true
+      });
+    }
+
+    // Any other unknown status — block
     return res.status(403).json({
       message: 'Your subscription is inactive. Please update your billing.',
       trialExpired: true

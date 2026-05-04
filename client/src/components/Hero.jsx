@@ -28,7 +28,7 @@ const Hero = () => {
                 to="/register"
                 className="w-full sm:w-auto px-8 py-4 bg-lazie-primary text-gray-950 rounded-full text-lg font-bold hover:brightness-90 transition-all shadow-xl shadow-lazie-primary/30 text-center"
               >
-                Get Started for Free
+                Get Started Now
               </Link>
               {/* <button className="px-8 py-4 border border-gray-200 text-gray-700 rounded-full font-bold hover:bg-gray-50 transition-all flex items-center justify-center gap-2 uppercase tracking-wide">
                 Watch Demo
