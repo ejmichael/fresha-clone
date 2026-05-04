@@ -30,13 +30,18 @@ const Hero = () => {
               >
                 Get Started Now
               </Link>
-              {/* <button className="px-8 py-4 border border-gray-200 text-gray-700 rounded-full font-bold hover:bg-gray-50 transition-all flex items-center justify-center gap-2 uppercase tracking-wide">
-                Watch Demo
-              </button> */}
+              <div className="flex flex-col items-center sm:items-start">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xl font-black text-gray-900 line-through decoration-red-500 decoration-2 opacity-50">R149</span>
+                  <span className="text-2xl font-black text-gray-900">R14.90</span>
+                  <span className="bg-[#f0ff00] text-gray-900 text-xs font-black px-2 py-0.5 rounded-full uppercase tracking-wide">90% OFF</span>
+                </div>
+                <span className="text-xs text-gray-500 font-medium">First month only · R149/mo after</span>
+              </div>
             </div>
 
             <div className="mt-8 flex items-center gap-6 text-sm text-gray-500 font-medium">
-              <span className="flex items-center gap-1.5"><CheckCircle2 size={16} className="text-lazie-primary fill-lazie-primary/20" /> No credit card</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 size={16} className="text-lazie-primary fill-lazie-primary/20" /> Cancel anytime</span>
               <span className="flex items-center gap-1.5"><CheckCircle2 size={16} className="text-lazie-primary fill-lazie-primary/20" /> Set up in minutes</span>
             </div>
           </div>
