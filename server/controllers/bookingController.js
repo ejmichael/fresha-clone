@@ -14,7 +14,8 @@ export const getBooking = async (req, res) => {
     const appointment = await Appointment.findById(id).populate('business service staff');
     if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
 
-    // Return only necessary public info
+    const calendarUrl = generateGoogleCalendarLink(appointment, appointment.business, appointment.service);
+
     res.json({
       id: appointment._id,
       status: appointment.status,
@@ -27,11 +28,14 @@ export const getBooking = async (req, res) => {
       service: {
         name: appointment.service.name,
         duration: appointment.service.duration,
-        price: appointment.service.price
+        price: appointment.service.price,
+        currency: appointment.service.currency
       },
       staff: {
         name: appointment.staff.name
-      }
+      },
+      calendarUrl,
+      icsDownloadUrl: `/api/bookings/${appointment._id}/ics`
     });
   } catch (error) {
     console.error('Get Booking Error:', error);

@@ -3,6 +3,7 @@ import LandingPage from './pages/LandingPage';
 import FeaturesPage from './pages/FeaturesPage';
 import BookingPage from './pages/BookingPage';
 import CancelPage from './pages/CancelPage';
+import BookingDetailPage from './pages/BookingDetailPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import PricingPage from './pages/PricingPage';
@@ -35,6 +36,7 @@ function App() {
             <Route path="/invoicing" element={<Navigate to="/features" replace />} />
             <Route path="/book/:slug" element={<BookingPage />} />
             <Route path="/cancel/:id" element={<CancelPage />} />
+            <Route path="/booking/:id" element={<BookingDetailPage />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/about" element={<AboutPage />} />

@@ -79,8 +79,8 @@ const CancelPage = () => {
               >
                 {loading ? 'Cancelling...' : 'Yes, Cancel Booking'}
               </button>
-              <Link 
-                to={returnPath}
+              <Link
+                to={`/booking/${id}`}
                 className="w-full py-3 bg-white border border-gray-200 font-medium text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 No, Keep Booking

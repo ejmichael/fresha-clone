@@ -35,11 +35,11 @@ const ConfirmationScreen = ({ result, business }) => {
       </div>
 
       <div className="pt-8 border-t border-gray-100">
-        <a 
-          href={`/cancel/${result.appointment._id}`}
-          className="text-sm font-medium text-gray-500 hover:text-red-600 transition-colors"
+        <a
+          href={`/booking/${result.appointment._id}`}
+          className="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
         >
-          Need to cancel this booking?
+          View booking confirmation
         </a>
       </div>
     </div>

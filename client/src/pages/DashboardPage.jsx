@@ -102,8 +102,8 @@ const DashboardPage = () => {
       {!hasServices && (
         <div className="bg-teal-50 border border-teal-200 rounded-lg p-4 mb-8 flex flex-col sm:flex-row items-center justify-between">
           <p className="text-teal-800 font-medium">Your booking page isn't ready yet. Add your services and staff to start taking bookings.</p>
-          <button onClick={() => navigate('/dashboard/settings')} className="mt-3 sm:mt-0 text-teal-700 bg-teal-100 px-4 py-2 rounded-md text-sm font-semibold hover:bg-teal-200 transition-colors">
-            Go to Settings →
+          <button onClick={() => navigate('/dashboard/business')} className="mt-3 sm:mt-0 text-teal-700 bg-teal-100 px-4 py-2 rounded-md text-sm font-semibold hover:bg-teal-200 transition-colors">
+            Go to Business Setup →
           </button>
         </div>
       )}
@@ -198,7 +198,7 @@ const CalendarView = ({ appointments, weekDays, today, loading, onPrev, onNext, 
   return (
     <div className="flex flex-col h-full bg-white relative">
       {/* Calendar Header/Controls */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-white sticky top-0 z-40">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-white sticky top-0 z-10">
         <div className="flex items-center gap-4">
           <h2 className="text-xl font-bold text-gray-900 font-heading">
             {weekDays[0].toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
