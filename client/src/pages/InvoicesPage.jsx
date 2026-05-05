@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getInvoices, createInvoice, updateInvoice, sendInvoice, downloadInvoicePDF, updateInvoiceStatus, deleteInvoice, getAppointments } from '../api/api';
 import { useToast } from '../hooks/useToast';
 import { format } from 'date-fns';
+import { Download, Mail, CheckCircle, Trash2, X } from 'lucide-react';
 
 const InvoicesPage = () => {
   const { showToast } = useToast();
@@ -61,12 +62,11 @@ const InvoicesPage = () => {
 
   const fetchRecentAppointments = async () => {
     try {
-      // Fetch completed appointments for dropdown
-      const { data } = await getAppointments({ 
-        startDate: format(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
-        endDate: format(new Date(), 'yyyy-MM-dd')
-      });
-      setRecentAppointments(data.filter(a => a.status === 'completed'));
+      const startDate = format(new Date(Date.now() - 90 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');
+      const endDate = format(new Date(), 'yyyy-MM-dd');
+      const { data } = await getAppointments(startDate, endDate);
+      // Show completed and confirmed so you can pre-invoice upcoming appointments too
+      setRecentAppointments(data.filter(a => a.status === 'completed' || a.status === 'confirmed'));
     } catch (err) {}
   };
 
@@ -439,23 +439,35 @@ const InvoicesPage = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right" onClick={e => e.stopPropagation()}>
-                      <div className="flex justify-end gap-1">
-                        <button onClick={() => handleDownload(inv)} className="p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all" title="Download PDF">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                      <div className="flex justify-end gap-2 flex-wrap">
+                        <button
+                          onClick={() => handleDownload(inv)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
+                        >
+                          <Download className="w-3.5 h-3.5" /> PDF
                         </button>
                         {inv.status === 'draft' && (
-                          <button onClick={() => handleSend(inv)} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="Send Email">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                          <button
+                            onClick={() => handleSend(inv)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors"
+                          >
+                            <Mail className="w-3.5 h-3.5" /> Send
                           </button>
                         )}
-                        {inv.status === 'sent' && (
-                          <button onClick={() => handleUpdateStatus(inv, 'paid')} className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all" title="Mark as Paid">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        {(inv.status === 'draft' || inv.status === 'sent') && (
+                          <button
+                            onClick={() => handleUpdateStatus(inv, 'paid')}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md text-green-600 bg-green-50 hover:bg-green-100 transition-colors"
+                          >
+                            <CheckCircle className="w-3.5 h-3.5" /> Mark Paid
                           </button>
                         )}
                         {inv.status === 'draft' && (
-                          <button onClick={() => handleDelete(inv)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Delete">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                          <button
+                            onClick={() => handleDelete(inv)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md text-red-500 bg-red-50 hover:bg-red-100 transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" /> Delete
                           </button>
                         )}
                       </div>
@@ -486,7 +498,7 @@ const InvoicesPage = () => {
                 </span>
               </div>
               <button onClick={() => setIsPanelOpen(false)} className="p-2 hover:bg-gray-100 rounded-full">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                <X className="w-5 h-5 text-gray-500" />
               </button>
             </div>
             
@@ -534,24 +546,35 @@ const InvoicesPage = () => {
               )}
             </div>
 
-            <div className="p-6 border-t bg-gray-50 grid grid-cols-2 gap-3">
-              <button onClick={() => handleDownload(selectedInvoice)} className="col-span-2 py-3 bg-white border border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 flex items-center justify-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                Download PDF
+            <div className="p-6 border-t bg-gray-50 flex flex-col gap-3">
+              <button
+                onClick={() => handleDownload(selectedInvoice)}
+                className="w-full py-3 bg-white border border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 flex items-center justify-center gap-2"
+              >
+                <Download className="w-4 h-4" /> Download PDF
               </button>
               {selectedInvoice.status === 'draft' && (
-                <button onClick={() => handleSend(selectedInvoice)} className="py-3 bg-teal-600 text-white font-bold rounded-xl hover:bg-teal-700 flex items-center justify-center gap-2">
-                  Send
+                <button
+                  onClick={() => handleSend(selectedInvoice)}
+                  className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 flex items-center justify-center gap-2"
+                >
+                  <Mail className="w-4 h-4" /> Email Invoice to Client
                 </button>
               )}
-              {selectedInvoice.status === 'sent' && (
-                <button onClick={() => handleUpdateStatus(selectedInvoice, 'paid')} className="py-3 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 flex items-center justify-center gap-2">
-                  Mark Paid
+              {(selectedInvoice.status === 'draft' || selectedInvoice.status === 'sent') && (
+                <button
+                  onClick={() => handleUpdateStatus(selectedInvoice, 'paid')}
+                  className="w-full py-3 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 flex items-center justify-center gap-2"
+                >
+                  <CheckCircle className="w-4 h-4" /> Mark as Paid
                 </button>
               )}
               {selectedInvoice.status !== 'paid' && selectedInvoice.status !== 'cancelled' && (
-                <button onClick={() => handleUpdateStatus(selectedInvoice, 'cancelled')} className="py-3 bg-white border border-red-100 text-red-500 font-bold rounded-xl hover:bg-red-50">
-                  Cancel
+                <button
+                  onClick={() => handleUpdateStatus(selectedInvoice, 'cancelled')}
+                  className="w-full py-3 bg-white border border-red-200 text-red-500 font-bold rounded-xl hover:bg-red-50 flex items-center justify-center gap-2"
+                >
+                  <X className="w-4 h-4" /> Cancel Invoice
                 </button>
               )}
             </div>
