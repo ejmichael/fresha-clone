@@ -569,12 +569,12 @@ const InvoicesPage = () => {
                   <CheckCircle className="w-4 h-4" /> Mark as Paid
                 </button>
               )}
-              {selectedInvoice.status !== 'paid' && selectedInvoice.status !== 'cancelled' && (
+              {(selectedInvoice.status === 'sent' || selectedInvoice.status === 'overdue') && (
                 <button
                   onClick={() => handleUpdateStatus(selectedInvoice, 'cancelled')}
-                  className="w-full py-3 bg-white border border-red-200 text-red-500 font-bold rounded-xl hover:bg-red-50 flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-white border border-red-200 text-red-500 font-medium rounded-xl hover:bg-red-50 flex items-center justify-center gap-2 text-sm"
                 >
-                  <X className="w-4 h-4" /> Cancel Invoice
+                  Void Invoice
                 </button>
               )}
             </div>

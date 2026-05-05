@@ -35,7 +35,8 @@ const DatePicker = ({ selectedDate, onChange }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4 max-w-sm shadow-sm">
       <div className="flex items-center justify-between mb-4">
-        <button 
+        <button
+          type="button"
           onClick={handlePrevMonth}
           disabled={currentMonth <= today && currentMonth.getMonth() === today.getMonth()}
           className="p-1 rounded-full hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
@@ -45,7 +46,8 @@ const DatePicker = ({ selectedDate, onChange }) => {
         <span className="font-medium text-gray-900">
           {currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
         </span>
-        <button 
+        <button
+          type="button"
           onClick={handleNextMonth}
           className="p-1 rounded-full hover:bg-gray-100 transition-colors"
         >
@@ -69,6 +71,7 @@ const DatePicker = ({ selectedDate, onChange }) => {
           
           return (
             <button
+              type="button"
               key={date.toISOString()}
               disabled={isPast}
               onClick={() => onChange(date)}

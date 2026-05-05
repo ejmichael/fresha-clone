@@ -48,9 +48,8 @@ const NewAppointmentPage = () => {
   }, []);
 
   const service = services.find(s => s._id === selectedService) || null;
-  const assignedStaff = service
-    ? staff.filter(s => service.assignedStaff.includes(s._id))
-    : [];
+  // Internal form — show all staff so the owner isn't restricted by service assignments
+  const eligibleStaff = service ? staff : [];
 
   useEffect(() => {
     if (!service || !selectedStaff || !selectedDate || !business) return;
@@ -207,12 +206,12 @@ const NewAppointmentPage = () => {
                     required
                   >
                     <option value="">Select staff</option>
-                    {assignedStaff.map(s => (
+                    {eligibleStaff.map(s => (
                       <option key={s._id} value={s._id}>{s.name}</option>
                     ))}
                   </select>
-                  {assignedStaff.length === 0 && (
-                    <p className="mt-2 text-xs text-amber-600">No staff assigned to this service. Go to Settings to assign staff.</p>
+                  {eligibleStaff.length === 0 && (
+                    <p className="mt-2 text-xs text-amber-600">No staff members found. Add staff in Settings first.</p>
                   )}
                 </div>
               )}
