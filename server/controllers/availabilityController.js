@@ -106,7 +106,7 @@ export const getAvailability = async (req, res) => {
         }));
       }
 
-      currentSlot = addMinutes(currentSlot, 15);
+      currentSlot = addMinutes(currentSlot, 30);
     }
 
     res.json(slots);
