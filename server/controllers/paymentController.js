@@ -54,8 +54,8 @@ export const createSubscriptionCheckout = async (req, res) => {
     const paymentData = {
       merchant_id: process.env.PAYFAST_MERCHANT_ID,
       merchant_key: process.env.PAYFAST_MERCHANT_KEY,
-      return_url: `${process.env.CLIENT_URL || 'https://lazie.co.za'}/dashboard/settings?payment=success`,
-      cancel_url: `${process.env.CLIENT_URL || 'https://lazie.co.za'}/dashboard/settings?payment=canceled`,
+      return_url: `${process.env.CLIENT_URL || 'https://lazie.co.za'}/dashboard?payment=success`,
+      cancel_url: `${process.env.CLIENT_URL || 'https://lazie.co.za'}/dashboard?payment=canceled`,
       notify_url: `https://${req.get('host')}/api/payments/itn`,
       name_first: business.name.split(' ')[0] || 'Business',
       name_last: business.name.split(' ').slice(1).join(' ') || 'Owner',

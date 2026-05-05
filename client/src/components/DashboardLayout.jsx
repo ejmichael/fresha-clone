@@ -9,14 +9,27 @@ const DashboardLayout = () => {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activating, setActivating] = useState(false);
+  const [awaitingPaymentConfirm, setAwaitingPaymentConfirm] = useState(false);
 
-  // Auto-refresh when coming back from PayFast
+  // Detect return from PayFast and start polling
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.get('payment') === 'success') {
+      setAwaitingPaymentConfirm(true);
       refreshProfile();
     }
   }, [location.search]);
+
+  // Poll refreshProfile every 2.5s until subscriptionStatus leaves pending_setup
+  useEffect(() => {
+    if (!awaitingPaymentConfirm) return;
+    if (business?.subscriptionStatus !== 'pending_setup') {
+      setAwaitingPaymentConfirm(false);
+      return;
+    }
+    const timer = setTimeout(() => refreshProfile(), 2500);
+    return () => clearTimeout(timer);
+  }, [awaitingPaymentConfirm, business?.subscriptionStatus]);
 
   if (!business) return null;
 
@@ -137,8 +150,24 @@ const DashboardLayout = () => {
 
       {/* Main content */}
       <main className="flex-1 overflow-y-auto pt-16 lg:pt-0 flex flex-col">
+        {/* Processing overlay shown while waiting for PayFast ITN to update subscription */}
+        {awaitingPaymentConfirm && setupRequired && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden flex flex-col relative z-50">
+              <div className="bg-[#f0ff00] px-6 py-8 text-center border-b border-[#f0ff00]/20">
+                <h2 className="text-3xl font-extrabold text-gray-900 mb-2">Payment Received!</h2>
+                <p className="text-gray-800 font-medium tracking-tight">We're activating your account — hang tight.</p>
+              </div>
+              <div className="p-8 text-center flex flex-col items-center gap-4">
+                <Loader2 className="w-10 h-10 animate-spin text-gray-900" />
+                <p className="text-gray-600 text-base">Confirming your subscription with our payment provider. This usually takes a few seconds.</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Registration Onboarding Payment Modal */}
-        {setupRequired && (
+        {setupRequired && !awaitingPaymentConfirm && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden flex flex-col relative z-50">
               <div className="bg-[#f0ff00] px-6 py-8 text-center border-b border-[#f0ff00]/20">

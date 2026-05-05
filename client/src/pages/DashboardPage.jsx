@@ -138,11 +138,13 @@ const DashboardPage = () => {
           </button>
         </div>
         
-        <button 
+        <button
           onClick={() => navigate('/dashboard/appointments/new')}
-          className="mb-2 hidden sm:flex items-center gap-2 px-4 py-2 bg-lazie-primary text-gray-900 rounded-lg font-bold text-sm hover:brightness-95 transition-all shadow-lg shadow-lazie-primary/20"
+          className="mb-2 flex items-center gap-2 px-4 py-2 bg-lazie-primary text-gray-900 rounded-lg font-bold text-sm hover:brightness-95 transition-all shadow-lg shadow-lazie-primary/20 flex-shrink-0"
         >
-          <CalIcon className="w-4 h-4" /> New Appointment
+          <CalIcon className="w-4 h-4" />
+          <span className="hidden sm:inline">New Appointment</span>
+          <span className="sm:hidden">New</span>
         </button>
       </div>
 

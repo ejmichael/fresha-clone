@@ -18,6 +18,7 @@ import DashboardLayout from './components/DashboardLayout';
 import DashboardPage from './pages/DashboardPage';
 import InvoicesPage from './pages/InvoicesPage';
 import AppointmentDetailPage from './pages/AppointmentDetailPage';
+import NewAppointmentPage from './pages/NewAppointmentPage';
 import SettingsPage from './pages/SettingsPage';
 import BusinessSettingsPage from './pages/BusinessSettingsPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -51,6 +52,7 @@ function App() {
             <Route path="/dashboard" element={<ProtectedRoute />}>
               <Route element={<DashboardLayout />}>
                 <Route index element={<DashboardPage />} />
+                <Route path="appointments/new" element={<NewAppointmentPage />} />
                 <Route path="appointments/:id" element={<AppointmentDetailPage />} />
                 <Route path="invoices" element={<InvoicesPage />} />
                 <Route path="business" element={<BusinessSettingsPage />} />
