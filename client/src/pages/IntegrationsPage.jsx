@@ -397,7 +397,7 @@ const IntegrationsPage = () => {
               to="/register"
               className="px-10 py-5 bg-lazie-primary text-gray-950 rounded-full font-bold text-lg hover:brightness-95 transition-all shadow-xl shadow-lazie-primary/20 flex items-center justify-center gap-2"
             >
-              Start for free <ArrowRight size={20} />
+              Start for R 14.90<ArrowRight size={20} />
             </Link>
             <Link
               to="/contact"

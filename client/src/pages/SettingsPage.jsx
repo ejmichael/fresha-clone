@@ -4,6 +4,7 @@ import { useToast } from '../hooks/useToast.jsx';
 import { getProfile } from '../api/api';
 import ProfileTab from '../components/settings/ProfileTab.jsx';
 import BillingTab from '../components/settings/BillingTab.jsx';
+import IntegrationsTab from '../components/settings/IntegrationsTab.jsx';
 
 const SettingsPage = () => {
   const { token } = useAuth();
@@ -31,7 +32,8 @@ const SettingsPage = () => {
 
   const tabs = [
     { id: 'profile', label: 'Profile' },
-    { id: 'billing', label: 'Billing & Subscription' }
+    { id: 'billing', label: 'Billing & Subscription' },
+    { id: 'integrations', label: 'Integrations' },
   ];
 
   return (
@@ -60,6 +62,7 @@ const SettingsPage = () => {
           <>
             {activeTab === 'profile' && <ProfileTab profile={profile} onProfileUpdate={setProfile} showToast={showToast} />}
             {activeTab === 'billing' && <BillingTab profile={profile} showToast={showToast} />}
+            {activeTab === 'integrations' && <IntegrationsTab profile={profile} />}
           </>
         )}
       </div>
