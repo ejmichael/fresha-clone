@@ -37,6 +37,7 @@ export const getAvailability = (params) => api.get('/availability', { params });
 export const createBooking = (data) => api.post('/bookings', data);
 export const getPublicBooking = (id) => api.get(`/bookings/${id}`);
 export const cancelBooking = (id) => api.patch(`/bookings/${id}/cancel`);
+export const reschedulePublicBooking = (id, date, time) => api.patch(`/bookings/${id}/reschedule`, { date, time });
 
 // Auth
 export const loginBusiness = (email, password) => api.post('/auth/login', { email, password });
@@ -47,6 +48,7 @@ export const getMe = () => api.get('/auth/me');
 export const getAppointments = (startDate, endDate) => api.get('/dashboard/appointments', { params: { startDate, endDate } });
 export const getAppointmentById = (id) => api.get(`/dashboard/appointments/${id}`);
 export const updateAppointmentStatus = (id, status) => api.patch(`/dashboard/appointments/${id}/status`, { status });
+export const rescheduleAppointment = (id, date, time) => api.patch(`/dashboard/appointments/${id}/reschedule`, { date, time });
 export const getTodayStats = () => api.get('/dashboard/stats/today');
 
 // Settings - Profile & Hours

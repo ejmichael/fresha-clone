@@ -133,14 +133,26 @@ const BookingDetailPage = () => {
           </div>
         )}
 
-        <div className="px-8 pb-8 pt-2 border-t border-gray-100 text-center">
+        <div className="px-8 pb-8 pt-2 border-t border-gray-100 text-center space-y-2">
           {!isCancelled && (
-            <Link
-              to={`/cancel/${booking.id}`}
-              className="text-sm text-gray-400 hover:text-red-500 transition-colors"
-            >
-              Need to cancel this booking?
-            </Link>
+            <div>
+              <Link
+                to={`/reschedule/${booking.id}`}
+                className="text-sm text-gray-500 hover:text-gray-800 transition-colors"
+              >
+                Need to reschedule?
+              </Link>
+            </div>
+          )}
+          {!isCancelled && (
+            <div>
+              <Link
+                to={`/cancel/${booking.id}`}
+                className="text-sm text-gray-400 hover:text-red-500 transition-colors"
+              >
+                Need to cancel this booking?
+              </Link>
+            </div>
           )}
           {isCancelled && (
             <Link

@@ -4,6 +4,7 @@ import emailQueue from '../queues/emailQueue.js';
 import { Queue } from 'bullmq';
 import connection from '../config/redis.js';
 import { autoCreateFromAppointment } from './invoiceController.js';
+import { addMinutes } from 'date-fns';
 
 export const getAppointments = async (req, res) => {
   try {
@@ -101,6 +102,84 @@ export const updateAppointmentStatus = async (req, res) => {
     res.json(appointment);
   } catch (error) {
     console.error('updateAppointmentStatus error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const rescheduleAppointment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { date, time } = req.body;
+    const businessId = req.business.id;
+
+    if (!date || !time) return res.status(400).json({ message: 'date and time are required' });
+
+    const appointment = await Appointment.findOne({ _id: id, business: businessId })
+      .populate('service')
+      .populate('business');
+    if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
+    if (appointment.status === 'cancelled') return res.status(400).json({ message: 'Cannot reschedule a cancelled appointment' });
+    if (appointment.status === 'completed') return res.status(400).json({ message: 'Cannot reschedule a completed appointment' });
+
+    const tz = appointment.business.timezone || 'Africa/Johannesburg';
+    const [hours, minutes] = time.split(':').map(Number);
+    const isoString = `${date}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
+
+    const getZonedDate = (iso, timeZone) => {
+      const d = new Date(iso);
+      const invDate = new Date(d.toLocaleString('en-US', { timeZone }));
+      return new Date(d.getTime() + (d.getTime() - invDate.getTime()));
+    };
+
+    const newStartTime = getZonedDate(isoString, tz);
+    const newEndTime = addMinutes(newStartTime, appointment.service.duration);
+
+    const conflict = await Appointment.findOne({
+      _id: { $ne: id },
+      staff: appointment.staff,
+      status: 'confirmed',
+      startTime: { $lt: newEndTime },
+      endTime: { $gt: newStartTime }
+    });
+    if (conflict) return res.status(400).json({ message: 'That time slot is not available for this staff member' });
+
+    // Cancel the old reminder job
+    if (appointment.reminderJobId && connection) {
+      const queue = new Queue('emails', { connection });
+      const oldJob = await queue.getJob(appointment.reminderJobId);
+      if (oldJob) await oldJob.remove();
+    }
+
+    appointment.startTime = newStartTime;
+    appointment.endTime = newEndTime;
+    appointment.reminderSent = false;
+
+    // Schedule a fresh reminder 12h before the new time
+    const reminderDelay = newStartTime.getTime() - Date.now() - (12 * 60 * 60 * 1000);
+    if (reminderDelay > 0) {
+      const newReminder = await emailQueue.add(
+        'reminder',
+        { type: 'reminder', appointmentId: appointment._id.toString() },
+        { delay: reminderDelay }
+      );
+      appointment.reminderJobId = newReminder.id;
+    } else {
+      appointment.reminderJobId = null;
+    }
+
+    await appointment.save();
+
+    await emailQueue.add('reschedule', {
+      type: 'reschedule',
+      appointmentId: appointment._id.toString(),
+    });
+
+    const updated = await Appointment.findById(id)
+      .populate('staff', 'name')
+      .populate('service', 'name duration price currency');
+    res.json(updated);
+  } catch (error) {
+    console.error('rescheduleAppointment error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };

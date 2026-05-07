@@ -4,6 +4,8 @@ import FeaturesPage from './pages/FeaturesPage';
 import BookingPage from './pages/BookingPage';
 import CancelPage from './pages/CancelPage';
 import BookingDetailPage from './pages/BookingDetailPage';
+import ReschedulePage from './pages/ReschedulePage';
+import IntegrationsPage from './pages/IntegrationsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import PricingPage from './pages/PricingPage';
@@ -38,6 +40,8 @@ function App() {
             <Route path="/book/:slug" element={<BookingPage />} />
             <Route path="/cancel/:id" element={<CancelPage />} />
             <Route path="/booking/:id" element={<BookingDetailPage />} />
+            <Route path="/reschedule/:id" element={<ReschedulePage />} />
+            <Route path="/integrations" element={<IntegrationsPage />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/about" element={<AboutPage />} />

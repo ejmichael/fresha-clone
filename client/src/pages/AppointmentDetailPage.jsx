@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getAppointmentById, updateAppointmentStatus, getInvoices } from '../api/api';
-import { ArrowLeft, Clock, User, Phone, Mail, FileText, Calendar, CheckCircle, XCircle, ExternalLink } from 'lucide-react';
+import { getAppointmentById, updateAppointmentStatus, getInvoices, getAvailability, rescheduleAppointment } from '../api/api';
+import { ArrowLeft, Clock, User, Phone, Mail, FileText, Calendar, CheckCircle, XCircle, ExternalLink, CalendarClock, ChevronRight } from 'lucide-react';
+import DatePicker from '../components/DatePicker';
+import TimeSlots from '../components/TimeSlots';
 
 const AppointmentDetailPage = () => {
   const { id } = useParams();
@@ -12,6 +14,14 @@ const AppointmentDetailPage = () => {
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState('');
   const [relatedInvoice, setRelatedInvoice] = useState(null);
+
+  const [showReschedule, setShowReschedule] = useState(false);
+  const [rescheduleDate, setRescheduleDate] = useState(null);
+  const [rescheduleTime, setRescheduleTime] = useState(null);
+  const [rescheduleSlots, setRescheduleSlots] = useState([]);
+  const [rescheduleSlotsLoading, setRescheduleSlotsLoading] = useState(false);
+  const [rescheduleError, setRescheduleError] = useState('');
+  const [rescheduleLoading, setRescheduleLoading] = useState(false);
 
   const fetchAppointment = async () => {
     try {
@@ -42,6 +52,50 @@ const AppointmentDetailPage = () => {
       fetchInvoice();
     }
   }, [id]);
+
+  useEffect(() => {
+    if (!rescheduleDate || !appointment) return;
+    setRescheduleTime(null);
+    setRescheduleSlots([]);
+    setRescheduleSlotsLoading(true);
+    const load = async () => {
+      try {
+        const offset = rescheduleDate.getTimezoneOffset() * 60000;
+        const formattedDate = new Date(rescheduleDate.getTime() - offset).toISOString().split('T')[0];
+        const { data } = await getAvailability({
+          businessId: appointment.business,
+          staffId: appointment.staff._id,
+          serviceId: appointment.service._id,
+          date: formattedDate,
+        });
+        setRescheduleSlots(data);
+      } catch {
+        setRescheduleSlots([]);
+      } finally {
+        setRescheduleSlotsLoading(false);
+      }
+    };
+    load();
+  }, [rescheduleDate, appointment]);
+
+  const handleReschedule = async () => {
+    if (!rescheduleDate || !rescheduleTime) return;
+    setRescheduleLoading(true);
+    setRescheduleError('');
+    try {
+      const offset = rescheduleDate.getTimezoneOffset() * 60000;
+      const formattedDate = new Date(rescheduleDate.getTime() - offset).toISOString().split('T')[0];
+      await rescheduleAppointment(id, formattedDate, rescheduleTime);
+      setShowReschedule(false);
+      setRescheduleDate(null);
+      setRescheduleTime(null);
+      await fetchAppointment();
+    } catch (err) {
+      setRescheduleError(err.response?.data?.message || 'Failed to reschedule. Please try again.');
+    } finally {
+      setRescheduleLoading(false);
+    }
+  };
 
   const handleUpdateStatus = async (status) => {
     if (!window.confirm(`Are you sure you want to mark this appointment as ${status}?`)) return;
@@ -97,6 +151,13 @@ const AppointmentDetailPage = () => {
           <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0">
             {appointment.status === 'confirmed' ? (
               <>
+                <button
+                  onClick={() => { setShowReschedule(s => !s); setRescheduleError(''); }}
+                  disabled={actionLoading}
+                  className="inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 disabled:opacity-70"
+                >
+                  <CalendarClock className="w-4 h-4 mr-2" /> Reschedule
+                </button>
                 <button
                   onClick={() => handleUpdateStatus('completed')}
                   disabled={actionLoading}
@@ -196,6 +257,58 @@ const AppointmentDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {showReschedule && appointment.status === 'confirmed' && (
+        <div className="mt-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+              <CalendarClock className="w-5 h-5 text-lazie-primary" /> Reschedule Appointment
+            </h2>
+            <button
+              type="button"
+              onClick={() => { setShowReschedule(false); setRescheduleDate(null); setRescheduleTime(null); setRescheduleError(''); }}
+              className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+          <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-3">Select a new date</p>
+              <DatePicker selectedDate={rescheduleDate} onChange={d => { setRescheduleDate(d); setRescheduleTime(null); }} />
+            </div>
+            <div>
+              {rescheduleDate && (
+                <>
+                  <p className="text-sm font-medium text-gray-700 mb-3">Select a new time</p>
+                  <TimeSlots
+                    slots={rescheduleSlots}
+                    loading={rescheduleSlotsLoading}
+                    selectedTime={rescheduleTime}
+                    onSelect={setRescheduleTime}
+                  />
+                </>
+              )}
+            </div>
+          </div>
+          {rescheduleError && (
+            <div className="mx-6 mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
+              {rescheduleError}
+            </div>
+          )}
+          <div className="px-6 pb-6">
+            <button
+              type="button"
+              onClick={handleReschedule}
+              disabled={!rescheduleDate || !rescheduleTime || rescheduleLoading}
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ChevronRight className="w-4 h-4" />
+              {rescheduleLoading ? 'Rescheduling...' : 'Confirm Reschedule'}
+            </button>
+          </div>
+        </div>
+      )}
 
       {relatedInvoice && (
         <div className="bg-teal-50 border-t border-teal-100 p-6">

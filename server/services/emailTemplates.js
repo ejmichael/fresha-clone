@@ -42,13 +42,63 @@ export const confirmationTemplate = (appointment, googleCalUrl) => `
 
       <a href="${googleCalUrl}" class="button">Add to Google Calendar</a>
       
-      <p style="margin-top: 30px;">
+      <p style="margin-top: 30px; line-height: 2;">
+        <a href="${process.env.CLIENT_URL}/reschedule/${appointment._id}" class="cancel-link">Need to reschedule?</a>
+        &nbsp;&nbsp;·&nbsp;&nbsp;
         <a href="${process.env.CLIENT_URL}/cancel/${appointment._id}" class="cancel-link">Can't make it? Cancel your booking</a>
       </p>
     </div>
     <div class="footer">
       Powered by FreshaClone
     </div>
+  </div>
+</body>
+</html>
+`;
+
+export const rescheduleTemplate = (appointment, googleCalUrl) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 0 auto; background: #ffffff; }
+    .header { background-color: #F59E0B; color: white; padding: 20px; text-align: center; }
+    .content { padding: 30px; border: 1px solid #eee; border-top: none; }
+    .details { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    .details td { padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
+    .label { font-weight: bold; color: #666; width: 120px; }
+    .value { font-weight: 500; color: #111; }
+    .button { display: inline-block; padding: 12px 24px; background-color: #F59E0B; color: white !important; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0; }
+    .footer { padding: 20px; text-align: center; color: #999; font-size: 12px; }
+    .cancel-link { color: #666; font-size: 13px; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header"><h1>${appointment.business.name}</h1></div>
+    <div class="content">
+      <h2>Your appointment has been rescheduled</h2>
+      <p>Hi ${appointment.clientName}, your appointment has been moved to a new time.</p>
+      <table class="details">
+        <tr><td class="label">Service</td><td class="value">${appointment.service.name}</td></tr>
+        <tr><td class="label">Professional</td><td class="value">${appointment.staff.name}</td></tr>
+        <tr>
+          <td class="label">New Time</td>
+          <td class="value">${new Date(appointment.startTime).toLocaleString('en-US', {
+  weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: appointment.business.timezone
+})}</td>
+        </tr>
+        <tr><td class="label">Duration</td><td class="value">${appointment.service.duration} mins</td></tr>
+        <tr><td class="label">Location</td><td class="value">${appointment.business.address}</td></tr>
+      </table>
+      <a href="${googleCalUrl}" class="button">Update Google Calendar</a>
+      <p style="margin-top: 30px;">
+        <a href="${process.env.CLIENT_URL}/cancel/${appointment._id}" class="cancel-link">Can't make the new time? Cancel your booking</a>
+      </p>
+    </div>
+    <div class="footer">Powered by Lazie</div>
   </div>
 </body>
 </html>

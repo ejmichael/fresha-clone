@@ -20,6 +20,10 @@ export const getBooking = async (req, res) => {
       id: appointment._id,
       status: appointment.status,
       startTime: appointment.startTime,
+      // IDs exposed so public pages (reschedule, booking detail) can fetch availability
+      businessId: appointment.business._id,
+      staffId: appointment.staff._id,
+      serviceId: appointment.service._id,
       business: {
         name: appointment.business.name,
         slug: appointment.business.slug,
@@ -195,6 +199,82 @@ export const cancelBooking = async (req, res) => {
     res.json({ message: 'Booking cancelled successfully', appointment });
   } catch (error) {
     console.error('Cancel Error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const reschedulePublicBooking = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { date, time } = req.body;
+
+    if (!date || !time) return res.status(400).json({ message: 'date and time are required' });
+
+    const appointment = await Appointment.findById(id).populate('service').populate('business');
+    if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
+    if (appointment.status === 'cancelled') return res.status(400).json({ message: 'This appointment has already been cancelled.' });
+    if (appointment.status === 'completed') return res.status(400).json({ message: 'This appointment has already been completed.' });
+
+    const hoursUntil = differenceInHours(new Date(appointment.startTime), new Date());
+    if (hoursUntil < 2) {
+      return res.status(400).json({ message: 'Too late to reschedule. Changes must be made at least 2 hours before the appointment.' });
+    }
+
+    const tz = appointment.business.timezone || 'Africa/Johannesburg';
+    const [hours, minutes] = time.split(':').map(Number);
+    const isoString = `${date}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
+
+    const getZonedDate = (iso, timeZone) => {
+      const d = new Date(iso);
+      const invDate = new Date(d.toLocaleString('en-US', { timeZone }));
+      return new Date(d.getTime() + (d.getTime() - invDate.getTime()));
+    };
+
+    const newStartTime = getZonedDate(isoString, tz);
+    const newEndTime = addMinutes(newStartTime, appointment.service.duration);
+
+    const conflict = await Appointment.findOne({
+      _id: { $ne: id },
+      staff: appointment.staff,
+      status: 'confirmed',
+      startTime: { $lt: newEndTime },
+      endTime: { $gt: newStartTime }
+    });
+    if (conflict) return res.status(400).json({ message: 'That time slot is no longer available. Please choose another time.' });
+
+    // Cancel the old reminder job
+    if (appointment.reminderJobId && connection) {
+      const queue = new Queue('emails', { connection });
+      const oldJob = await queue.getJob(appointment.reminderJobId);
+      if (oldJob) await oldJob.remove();
+    }
+
+    appointment.startTime = newStartTime;
+    appointment.endTime = newEndTime;
+    appointment.reminderSent = false;
+
+    const reminderDelay = newStartTime.getTime() - Date.now() - (12 * 60 * 60 * 1000);
+    if (reminderDelay > 0) {
+      const newReminder = await emailQueue.add(
+        'reminder',
+        { type: 'reminder', appointmentId: appointment._id.toString() },
+        { delay: reminderDelay }
+      );
+      appointment.reminderJobId = newReminder.id;
+    } else {
+      appointment.reminderJobId = null;
+    }
+
+    await appointment.save();
+
+    await emailQueue.add('reschedule', {
+      type: 'reschedule',
+      appointmentId: appointment._id.toString(),
+    });
+
+    res.json({ message: 'Appointment rescheduled successfully' });
+  } catch (error) {
+    console.error('Public reschedule error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };

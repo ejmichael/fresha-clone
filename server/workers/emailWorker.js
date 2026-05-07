@@ -1,6 +1,6 @@
 import { Worker } from 'bullmq';
 import connection from '../config/redis.js';
-import { sendConfirmationEmail, sendReminderEmail, sendCancellationEmail, sendOwnerNotificationEmail, sendWelcomeEmail } from '../services/emailService.js';
+import { sendConfirmationEmail, sendRescheduleEmail, sendReminderEmail, sendCancellationEmail, sendOwnerNotificationEmail, sendWelcomeEmail } from '../services/emailService.js';
 
 if (connection) {
   const worker = new Worker('emails', async (job) => {
@@ -13,6 +13,10 @@ if (connection) {
 
     if (type === 'reminder') {
       await sendReminderEmail(appointmentId);
+    }
+
+    if (type === 'reschedule') {
+      await sendRescheduleEmail(appointmentId);
     }
 
     if (type === 'cancellation') {

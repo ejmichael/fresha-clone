@@ -5,6 +5,7 @@ import {
   getAppointments,
   getAppointmentById,
   updateAppointmentStatus,
+  rescheduleAppointment,
   getTodayStats
 } from '../controllers/dashboardController.js';
 
@@ -16,6 +17,7 @@ router.use(subscriptionGuard);
 router.get('/appointments', getAppointments);
 router.get('/appointments/:id', getAppointmentById);
 router.patch('/appointments/:id/status', updateAppointmentStatus);
+router.patch('/appointments/:id/reschedule', rescheduleAppointment);
 router.get('/stats/today', getTodayStats);
 
 export default router;

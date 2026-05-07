@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import Business from '../models/Business.js';
 import Appointment from '../models/Appointment.js';
 import { generateICS, generateGoogleCalendarLink } from './calendarService.js';
-import { confirmationTemplate, reminderTemplate, cancellationTemplate, ownerNotificationTemplate, trialExpirationTemplate, welcomeEmailTemplate } from './emailTemplates.js';
+import { confirmationTemplate, rescheduleTemplate, reminderTemplate, cancellationTemplate, ownerNotificationTemplate, trialExpirationTemplate, welcomeEmailTemplate } from './emailTemplates.js';
 
 dotenv.config();
 
@@ -47,6 +47,34 @@ export const sendConfirmationEmail = async (appointmentId) => {
     });
   } catch (error) {
     console.error('sendConfirmationEmail error:', error);
+    throw error;
+  }
+};
+
+export const sendRescheduleEmail = async (appointmentId) => {
+  try {
+    const appointment = await fetchPopulatedAppointment(appointmentId);
+    if (!appointment) throw new Error('Appointment not found');
+
+    const icsString = generateICS(appointment, appointment.business, appointment.service, appointment.staff);
+    const googleCalUrl = generateGoogleCalendarLink(appointment, appointment.business, appointment.service);
+    const html = rescheduleTemplate(appointment, googleCalUrl);
+
+    if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 're_mock_key') {
+      console.log(`[Mock Email] Reschedule notification sent to ${appointment.clientEmail}`);
+      return;
+    }
+
+    await resend.emails.send({
+      from: EMAIL_FROM,
+      to: [appointment.clientEmail],
+      reply_to: appointment.business.email,
+      subject: `Your appointment has been rescheduled — ${appointment.service.name} at ${appointment.business.name}`,
+      html,
+      attachments: [{ filename: 'appointment.ics', content: Buffer.from(icsString).toString('base64') }]
+    });
+  } catch (error) {
+    console.error('sendRescheduleEmail error:', error);
     throw error;
   }
 };
