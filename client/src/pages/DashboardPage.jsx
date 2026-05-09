@@ -234,7 +234,7 @@ const CalendarView = ({ appointments, weekDays, today, loading, onPrev, onNext, 
         <div className="flex flex-1 min-w-[800px] relative bg-white">
           {weekDays.map((date, i) => {
             const isToday = date.toDateString() === today.toDateString();
-            const dayAppts = appointments.filter(a => new Date(a.startTime).toDateString() === date.toDateString());
+            const dayAppts = appointments.filter(a => new Date(a.startTime).toDateString() === date.toDateString() && a.status !== 'cancelled');
 
             return (
               <div key={i} className={`flex-1 min-w-[120px] border-r border-gray-100 relative group/col flex flex-col ${isToday ? 'bg-lazie-primary/[0.01]' : 'bg-white'}`}>

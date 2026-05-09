@@ -49,7 +49,7 @@ export const confirmationTemplate = (appointment, googleCalUrl) => `
       </p>
     </div>
     <div class="footer">
-      Powered by FreshaClone
+      Powered by Lazie
     </div>
   </div>
 </body>
@@ -145,7 +145,7 @@ export const reminderTemplate = (appointment) => `
       </p>
     </div>
     <div class="footer">
-      Powered by FreshaClone
+      Powered by Lazie
     </div>
   </div>
 </body>
@@ -191,7 +191,7 @@ export const cancellationTemplate = (appointment) => `
       </p>
     </div>
     <div class="footer">
-      Powered by FreshaClone
+      Powered by Lazie
     </div>
   </div>
 </body>
@@ -242,7 +242,7 @@ export const ownerNotificationTemplate = (appointment) => `
       </div>
     </div>
     <div class="footer">
-      Powered by FreshaClone
+      Powered by Lazie
     </div>
   </div>
 </body>
@@ -315,6 +315,129 @@ export const invoiceEmailTemplate = (invoice, business) => `
   </div>
 </body>
 </html>
+`;
+
+// ── Contact form ──────────────────────────────────────────────────────────────
+
+export const contactAdminTemplate = ({ firstName, lastName, email, category, message }) => `
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #333; margin:0; padding:0; background:#f9fafb; }
+  .container { max-width:600px; margin:20px auto; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,.05); }
+  .header { background:#111827; color:#fff; padding:24px 30px; }
+  .content { padding:28px 30px; }
+  .field { margin-bottom:16px; }
+  .label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#6b7280; margin-bottom:4px; }
+  .value { font-size:15px; color:#111; background:#f3f4f6; padding:10px 14px; border-radius:8px; }
+  .footer { padding:16px 30px; text-align:center; color:#9ca3af; font-size:12px; border-top:1px solid #e5e7eb; }
+</style>
+</head><body>
+<div class="container">
+  <div class="header"><h2 style="margin:0;font-size:18px;">📬 New Contact Form Submission</h2></div>
+  <div class="content">
+    <div class="field"><div class="label">Name</div><div class="value">${firstName} ${lastName}</div></div>
+    <div class="field"><div class="label">Email</div><div class="value">${email}</div></div>
+    <div class="field"><div class="label">Category</div><div class="value">${category}</div></div>
+    <div class="field"><div class="label">Message</div><div class="value" style="white-space:pre-wrap;">${message}</div></div>
+    <p style="margin-top:20px;font-size:13px;color:#6b7280;">Reply directly to this email to respond to ${firstName}.</p>
+  </div>
+  <div class="footer">Lazie · Contact Form</div>
+</div>
+</body></html>
+`;
+
+export const contactConfirmationTemplate = ({ firstName }) => `
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #333; margin:0; padding:0; background:#f9fafb; }
+  .container { max-width:600px; margin:20px auto; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,.05); }
+  .header { background:#111827; color:#fff; padding:30px; text-align:center; }
+  .content { padding:32px 30px; }
+  .footer { padding:16px 30px; text-align:center; color:#9ca3af; font-size:12px; border-top:1px solid #e5e7eb; }
+</style>
+</head><body>
+<div class="container">
+  <div class="header"><h1 style="margin:0;font-size:22px;font-family:Pacifico,cursive;">lazie</h1></div>
+  <div class="content">
+    <h2 style="margin-top:0;">We got your message, ${firstName}!</h2>
+    <p>Thanks for reaching out. Our team has received your inquiry and will get back to you within <strong>1–2 business days</strong>.</p>
+    <p style="color:#6b7280;font-size:14px;">If your matter is urgent, please reply directly to this email and we'll prioritise it.</p>
+  </div>
+  <div class="footer">Lazie · Simplify your business.</div>
+</div>
+</body></html>
+`;
+
+// ── Subscription cancellation ──────────────────────────────────────────────────
+
+export const cancellationRequestAdminTemplate = (business) => `
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #333; margin:0; padding:0; background:#f9fafb; }
+  .container { max-width:600px; margin:20px auto; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,.05); }
+  .header { background:#dc2626; color:#fff; padding:24px 30px; }
+  .content { padding:28px 30px; }
+  .field { margin-bottom:16px; }
+  .label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#6b7280; margin-bottom:4px; }
+  .value { font-size:15px; color:#111; background:#f3f4f6; padding:10px 14px; border-radius:8px; font-family:monospace; }
+  .action-box { background:#fef2f2; border:2px solid #dc2626; border-radius:10px; padding:16px 20px; margin:24px 0; }
+  .footer { padding:16px 30px; text-align:center; color:#9ca3af; font-size:12px; border-top:1px solid #e5e7eb; }
+</style>
+</head><body>
+<div class="container">
+  <div class="header"><h2 style="margin:0;font-size:18px;">⚠️ Subscription Cancellation Request</h2></div>
+  <div class="content">
+    <p>A business has requested to cancel their Lazie subscription. Please cancel it manually on PayFast.</p>
+    <div class="field"><div class="label">Business Name</div><div class="value">${business.name}</div></div>
+    <div class="field"><div class="label">Email</div><div class="value">${business.email}</div></div>
+    <div class="field"><div class="label">Business ID</div><div class="value">${business._id}</div></div>
+    <div class="field"><div class="label">PayFast Token</div><div class="value">${business.payfastToken || 'No token stored — subscription may not have been active on PayFast'}</div></div>
+    <div class="field"><div class="label">Access Expires</div><div class="value">${business.subscriptionExpiresAt ? new Date(business.subscriptionExpiresAt).toLocaleDateString('en-ZA', { dateStyle: 'full' }) : 'N/A'}</div></div>
+    <div class="action-box">
+      <strong style="color:#dc2626;">Action required:</strong>
+      <ol style="margin:8px 0 0;padding-left:20px;color:#374151;font-size:14px;">
+        <li>Log into the PayFast merchant console</li>
+        <li>Find the subscription linked to the token above</li>
+        <li>Cancel the recurring billing</li>
+      </ol>
+    </div>
+  </div>
+  <div class="footer">Lazie · Internal Admin Notification</div>
+</div>
+</body></html>
+`;
+
+export const cancellationRequestClientTemplate = (business) => `
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #333; margin:0; padding:0; background:#f9fafb; }
+  .container { max-width:600px; margin:20px auto; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,.05); }
+  .header { background:#111827; color:#fff; padding:30px; text-align:center; }
+  .content { padding:32px 30px; }
+  .info-box { background:#f3f4f6; border-radius:10px; padding:16px 20px; margin:20px 0; font-size:14px; color:#374151; }
+  .footer { padding:16px 30px; text-align:center; color:#9ca3af; font-size:12px; border-top:1px solid #e5e7eb; }
+</style>
+</head><body>
+<div class="container">
+  <div class="header"><h1 style="margin:0;font-size:22px;font-family:Pacifico,cursive;">lazie</h1></div>
+  <div class="content">
+    <h2 style="margin-top:0;">Cancellation request received</h2>
+    <p>Hi <strong>${business.name}</strong>,</p>
+    <p>We've received your request to cancel your Lazie subscription. We're sorry to see you go.</p>
+    <div class="info-box">
+      <strong>What happens next:</strong>
+      <ul style="margin:8px 0 0;padding-left:20px;">
+        <li>Your account remains fully active until <strong>${business.subscriptionExpiresAt ? new Date(business.subscriptionExpiresAt).toLocaleDateString('en-ZA', { dateStyle: 'long' }) : 'the end of your billing period'}</strong>.</li>
+        <li>Our team will process the cancellation on our payments platform within 1 business day.</li>
+        <li>You will not be charged again after your current period ends.</li>
+      </ul>
+    </div>
+    <p>If you cancelled by mistake or change your mind, you can re-subscribe anytime from your <a href="${process.env.CLIENT_URL}/dashboard/settings">billing settings</a>.</p>
+    <p style="color:#6b7280;font-size:14px;">Questions? Reply to this email and we'll help.</p>
+  </div>
+  <div class="footer">Lazie · Simplify your business.</div>
+</div>
+</body></html>
 `;
 
 export const trialExpirationTemplate = (business, daysLeft) => `

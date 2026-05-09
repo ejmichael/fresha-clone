@@ -13,6 +13,7 @@ import dashboardRoutes from './routes/dashboard.js';
 import settingsRoutes from './routes/settings.js';
 import invoiceRoutes from './routes/invoices.js';
 import paymentRoutes from './routes/paymentRoutes.js';
+import contactRoutes from './routes/contact.js';
 
 import './workers/emailWorker.js';
 import startCronJobs from './workers/cronJobs.js';
@@ -42,6 +43,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/contact', contactRoutes);
 
 const connectDB = async () => {
   try {

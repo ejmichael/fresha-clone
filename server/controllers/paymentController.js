@@ -1,7 +1,13 @@
 import crypto from 'crypto';
 import Business from '../models/Business.js';
+import { Resend } from 'resend';
+import { cancellationRequestAdminTemplate, cancellationRequestClientTemplate } from '../services/emailTemplates.js';
 import dotenv from 'dotenv';
 dotenv.config();
+
+const resend = new Resend(process.env.RESEND_API_KEY || 're_mock_key');
+const EMAIL_FROM = process.env.EMAIL_FROM;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || process.env.EMAIL_FROM;
 
 // Helper to generate PayFast signature
 const generateSignature = (data, passPhrase = null) => {
@@ -223,6 +229,33 @@ export const cancelSubscription = async (req, res) => {
     business.subscriptionStatus = 'canceled';
     business.payfastToken = null;
     await business.save();
+
+    // Send notification emails
+    const isMock = !process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 're_mock_key';
+    if (isMock) {
+      console.log(`[Mock Email] Cancellation request emails for business: ${business.name} (${business.email})`);
+    } else {
+      try {
+        await Promise.all([
+          resend.emails.send({
+            from: EMAIL_FROM,
+            to: [ADMIN_EMAIL],
+            subject: `[ACTION REQUIRED] Subscription cancellation — ${business.name}`,
+            html: cancellationRequestAdminTemplate(business),
+          }),
+          resend.emails.send({
+            from: EMAIL_FROM,
+            to: [business.email],
+            reply_to: ADMIN_EMAIL,
+            subject: `Your Lazie cancellation request has been received`,
+            html: cancellationRequestClientTemplate(business),
+          }),
+        ]);
+      } catch (emailErr) {
+        console.error('[Cancel] Failed to send cancellation emails:', emailErr.message);
+        // Don't fail the request if email fails — the DB update already went through
+      }
+    }
 
     return res.json({ message: 'Subscription canceled successfully', business });
 
