@@ -1,27 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
 const PIXEL_ID = import.meta.env.VITE_META_PIXEL_ID;
 
-let gaLoaded = false;
 let pixelLoaded = false;
-
-const loadGA = () => {
-  if (!GA_ID || gaLoaded) return;
-  gaLoaded = true;
-
-  const script = document.createElement('script');
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
-  document.head.appendChild(script);
-
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = function () { window.dataLayer.push(arguments); };
-  window.gtag('js', new Date());
-  // send_page_view: false — we fire page views manually on route changes below
-  window.gtag('config', GA_ID, { send_page_view: false });
-};
 
 const loadPixel = () => {
   if (!PIXEL_ID || pixelLoaded) return;
@@ -43,19 +26,24 @@ const loadPixel = () => {
   document.head.appendChild(script);
 
   window.fbq('init', PIXEL_ID);
+  window.fbq('track', 'PageView');
 };
 
 const Analytics = () => {
   const location = useLocation();
+  // Skip the first render — GA4 fires the initial page view via index.html already
+  const isFirstRender = useRef(true);
 
-  // Load both trackers once on mount
   useEffect(() => {
-    loadGA();
     loadPixel();
   }, []);
 
-  // Fire a page view on every route change (including the first render)
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    // Subsequent SPA navigations
     if (window.gtag && GA_ID) {
       window.gtag('event', 'page_view', {
         page_path: location.pathname + location.search,
