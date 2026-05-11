@@ -90,30 +90,38 @@ const StaffTab = ({ staff, profile, onStaffChange, showToast }) => {
 
           <div>
             <h3 className="text-sm font-bold text-gray-900 mb-3 border-b border-gray-200 pb-2">Working Hours</h3>
-            <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {formData.workingHours.map((hq, i) => (
-                    <tr key={i} className={hq.isOff ? 'bg-gray-50' : ''}>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 w-28">
-                        {dayNames[hq.day]}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 w-24">
-                        <label className="flex items-center space-x-2 cursor-pointer">
-                          <input type="checkbox" checked={hq.isOff} onChange={(e) => handleHourUpdate(i, 'isOff', e.target.checked)} className="rounded border-gray-300 text-lazie-primary focus:ring-lazie-primary h-4 w-4" />
-                          <span>Day off</span>
-                        </label>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                        <input type="time" value={hq.start} onChange={(e) => handleHourUpdate(i, 'start', e.target.value)} disabled={hq.isOff} className="border border-gray-300 rounded-md py-1 px-2 text-sm focus:ring-lazie-primary focus:border-lazie-primary disabled:opacity-50 w-full max-w-[120px]" />
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                        <input type="time" value={hq.end} onChange={(e) => handleHourUpdate(i, 'end', e.target.value)} disabled={hq.isOff} className="border border-gray-300 rounded-md py-1 px-2 text-sm focus:ring-lazie-primary focus:border-lazie-primary disabled:opacity-50 w-full max-w-[120px]" />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="border border-gray-200 rounded-lg divide-y divide-gray-200 overflow-hidden">
+              {formData.workingHours.map((hq, i) => (
+                <div key={i} className={`px-4 py-3 flex flex-wrap items-center gap-x-4 gap-y-2 ${hq.isOff ? 'bg-gray-50' : 'bg-white'}`}>
+                  <span className="text-sm font-medium text-gray-900 w-24 flex-shrink-0">{dayNames[hq.day]}</span>
+                  <label className="flex items-center gap-2 cursor-pointer flex-shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={hq.isOff}
+                      onChange={e => handleHourUpdate(i, 'isOff', e.target.checked)}
+                      className="rounded border-gray-300 text-lazie-primary focus:ring-lazie-primary h-4 w-4"
+                    />
+                    <span className="text-sm text-gray-500">Day off</span>
+                  </label>
+                  {!hq.isOff && (
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <input
+                        type="time"
+                        value={hq.start}
+                        onChange={e => handleHourUpdate(i, 'start', e.target.value)}
+                        className="border border-gray-300 rounded-md py-1 px-2 text-sm focus:ring-lazie-primary focus:border-lazie-primary w-[110px]"
+                      />
+                      <span className="text-xs text-gray-400">to</span>
+                      <input
+                        type="time"
+                        value={hq.end}
+                        onChange={e => handleHourUpdate(i, 'end', e.target.value)}
+                        className="border border-gray-300 rounded-md py-1 px-2 text-sm focus:ring-lazie-primary focus:border-lazie-primary w-[110px]"
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
 
