@@ -55,6 +55,6 @@ const businessSchema = new mongoose.Schema({
     type: Date,
     default: null
   }
-});
+}, { timestamps: true });
 
 export default mongoose.model('Business', businessSchema);

@@ -8,6 +8,6 @@ const serviceSchema = new mongoose.Schema({
   currency: { type: String, default: 'ZAR' },
   assignedStaff: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Staff' }],
   isActive: { type: Boolean, default: true }
-});
+}, { timestamps: true });
 
 export default mongoose.model('Service', serviceSchema);

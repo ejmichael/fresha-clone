@@ -10,6 +10,6 @@ const staffSchema = new mongoose.Schema({
     end: String,
     isOff: { type: Boolean, default: false }
   }]
-});
+}, { timestamps: true });
 
 export default mongoose.model('Staff', staffSchema);
