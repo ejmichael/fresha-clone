@@ -16,6 +16,7 @@ const BookingPage = () => {
   
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState(null);
+  const [categoryFilter, setCategoryFilter] = useState('all');
   const [selectedStaff, setSelectedStaff] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
@@ -107,18 +108,46 @@ const BookingPage = () => {
         <div className="p-6 sm:p-8">
           {step === 1 && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <h2 className="text-2xl font-semibold mb-6">Select a Service</h2>
+              <h2 className="text-2xl font-semibold mb-5">Select a Service</h2>
+
+              {/* Category filter tabs */}
+              {(() => {
+                const cats = [...new Set(services.map(s => s.category).filter(Boolean))].sort();
+                if (cats.length === 0) return null;
+                return (
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    <button
+                      onClick={() => setCategoryFilter('all')}
+                      className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${categoryFilter === 'all' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                    >
+                      All
+                    </button>
+                    {cats.map(cat => (
+                      <button
+                        key={cat}
+                        onClick={() => setCategoryFilter(cat)}
+                        className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${categoryFilter === cat ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                );
+              })()}
+
               <div className="grid gap-4 sm:grid-cols-2">
-                {services.map(svc => (
-                  <ServiceCard 
-                    key={svc._id} 
-                    service={svc} 
-                    onClick={() => {
-                      setSelectedService(svc);
-                      setStep(2);
-                    }} 
-                  />
-                ))}
+                {services
+                  .filter(svc => categoryFilter === 'all' || svc.category === categoryFilter)
+                  .map(svc => (
+                    <ServiceCard
+                      key={svc._id}
+                      service={svc}
+                      onClick={() => {
+                        setSelectedService(svc);
+                        setStep(2);
+                      }}
+                    />
+                  ))}
               </div>
             </div>
           )}

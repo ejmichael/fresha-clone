@@ -94,7 +94,7 @@ export const getServices = async (req, res) => {
 
 export const createService = async (req, res) => {
   try {
-    const { name, duration, price, currency = 'ZAR', assignedStaff } = req.body;
+    const { name, duration, price, currency = 'ZAR', category = '', assignedStaff } = req.body;
     if (!name || !duration || !price) {
       return res.status(400).json({ message: 'Name, duration, and price are required' });
     }
@@ -111,6 +111,7 @@ export const createService = async (req, res) => {
       duration,
       price,
       currency,
+      category,
       assignedStaff: assignedStaff || []
     });
     res.status(201).json(service);
@@ -122,11 +123,11 @@ export const createService = async (req, res) => {
 export const updateService = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, duration, price, currency, assignedStaff } = req.body;
+    const { name, duration, price, currency, category, assignedStaff } = req.body;
 
     const service = await Service.findOneAndUpdate(
       { _id: id, business: req.business.id },
-      { name, duration, price, currency, assignedStaff },
+      { name, duration, price, currency, category, assignedStaff },
       { returnDocument: 'after' }
     );
     if (!service) return res.status(404).json({ message: 'Service not found' });

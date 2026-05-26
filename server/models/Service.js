@@ -6,6 +6,7 @@ const serviceSchema = new mongoose.Schema({
   duration: { type: Number, required: true },
   price: { type: Number, required: true },
   currency: { type: String, default: 'ZAR' },
+  category: { type: String, default: '' },
   assignedStaff: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Staff' }],
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
